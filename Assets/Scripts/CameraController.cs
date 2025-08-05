@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -5,10 +7,13 @@ using UnityEngine.InputSystem;
 public class CameraController : MonoBehaviour
 {
     [Header("Camera parameters")]
-    [SerializeField] private CinemachineVirtualCamera[] virtualCameras;
-    private CinemachineVirtualCamera activeVirtualCamera;
+    private List<CinemachineVirtualCamera> cinemachineCameras = new List<CinemachineVirtualCamera>();
+    [SerializeField] private CinemachineVirtualCamera activeCinemachineCamera;
     [SerializeField] private Camera mainCamera;
-    private CinemachineTransposer virtualCameraTransposer;
+    private CinemachineTransposer cinemachineFollow;
+    private Dictionary<GameObject, CinemachineVirtualCamera> targetCameras = new Dictionary<GameObject, CinemachineVirtualCamera>();
+    [Range(1f, 5f)]
+    [SerializeField] private float transitionSpeed;
 
     [Header("Zoom parameters")]
     private float zoomScale;
@@ -27,13 +32,20 @@ public class CameraController : MonoBehaviour
     private float rotateXAxis;
 
 
+    private void Awake()
+    {
+        foreach (CinemachineVirtualCamera virtualCamera in FindObjectsByType<CinemachineVirtualCamera>(FindObjectsSortMode.None))
+        {
+            targetCameras.Add(virtualCamera.transform.parent.gameObject, virtualCamera);
+            cinemachineCameras.Add(virtualCamera);
+        }
+    }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        activeVirtualCamera = virtualCameras[0];
-        virtualCameraTransposer = activeVirtualCamera.GetCinemachineComponent<CinemachineTransposer>();
-        followOffset = virtualCameraTransposer.m_FollowOffset;
+        cinemachineFollow = activeCinemachineCamera.GetCinemachineComponent<CinemachineTransposer>();
+        followOffset = cinemachineFollow.m_FollowOffset;
     }
 
     // Update is called once per frame
@@ -49,6 +61,7 @@ public class CameraController : MonoBehaviour
         zoomScale = context.ReadValue<float>();
 
         followOffset -= zoomDirection * Mathf.Sign(zoomScale);
+
         if (followOffset.magnitude < minZoom) {
             followOffset = minZoom * zoomDirection;
         }
@@ -57,7 +70,7 @@ public class CameraController : MonoBehaviour
             followOffset = maxZoom * zoomDirection;
         }
 
-        virtualCameraTransposer.m_FollowOffset = Vector3.Lerp(virtualCameraTransposer.m_FollowOffset, followOffset, zoomSpeed * Time.deltaTime);
+        cinemachineFollow.m_FollowOffset = Vector3.Lerp(cinemachineFollow.m_FollowOffset, followOffset, zoomSpeed * Time.deltaTime);
     }
 
     public void OnRotate(InputAction.CallbackContext context)
@@ -75,20 +88,41 @@ public class CameraController : MonoBehaviour
         RaycastHit rayHit;
 
         Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.Raycast(ray, out rayHit, 100f))
+        if (Physics.Raycast(ray, out rayHit))
         {
             if (rayHit.transform != null)
             {
-                Debug.Log(rayHit.collider.gameObject.name);
-
-                target = rayHit.collider.gameObject;
-                CinemachineVirtualCamera targetCamera = target.GetComponentInChildren<CinemachineVirtualCamera>();
-                Debug.Log(targetCamera.gameObject.name);
-                foreach (CinemachineVirtualCamera virtualCamera in virtualCameras)
+                if(rayHit.transform.tag == "NPC")
                 {
-                    virtualCamera.enabled = virtualCamera == targetCamera;
+                    target = rayHit.collider.gameObject;
+                    this.transform.SetParent(target.transform);
+                    this.transform.forward = target.transform.forward;
+                    StartCoroutine(CameraTransitionCoroutine(this.transform.localPosition));
                 }
             }
+        }
+    }
+
+    IEnumerator CameraTransitionCoroutine(Vector3 startPosition)
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < transitionSpeed)
+        {
+            this.transform.localPosition = Vector3.Lerp(startPosition, Vector3.zero, elapsedTime / transitionSpeed);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        this.transform.localPosition = Vector3.zero;
+
+        CinemachineVirtualCamera targetCamera = targetCameras.GetValueOrDefault(target);
+        foreach (CinemachineVirtualCamera virtualCamera in cinemachineCameras)
+        {
+            virtualCamera.enabled = virtualCamera == targetCamera;
+            activeCinemachineCamera = targetCamera;
+            cinemachineFollow = activeCinemachineCamera.GetCinemachineComponent<CinemachineTransposer>();
+            followOffset = cinemachineFollow.m_FollowOffset;
         }
     }
 }
