@@ -1,14 +1,16 @@
-using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(NavMeshAgent))]
+[RequireComponent(typeof(ControlOptions))]
 public class NPCController : MonoBehaviour
 {
     [SerializeField] List<Vector3> movementPositions = new List<Vector3>();
     private Vector3 nextPosition;
     [SerializeField] NavMeshAgent agent;
     [SerializeField] private Animator animator;
+    [SerializeField] private ControlOptions controlOptions;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

@@ -4,7 +4,7 @@ using Cinemachine;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class CameraController : MonoBehaviour
+public class CameraManager : MonoBehaviour
 {
     [Header("Camera parameters")]
     private List<CinemachineVirtualCamera> cinemachineCameras = new List<CinemachineVirtualCamera>();
@@ -14,6 +14,9 @@ public class CameraController : MonoBehaviour
     private Dictionary<GameObject, CinemachineVirtualCamera> targetCameras = new Dictionary<GameObject, CinemachineVirtualCamera>();
     [Range(1f, 5f)]
     [SerializeField] private float transitionSpeed;
+
+    [Header("World elements")]
+    [SerializeField] private GameObject worldGameObject;
 
     [Header("Zoom parameters")]
     private float zoomScale;
@@ -26,7 +29,9 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float zoomSpeed;
 
     [Header("Rotate parameters")]
-    [SerializeField] private GameObject target;
+    [SerializeField] private GameObject targetLookAt;
+    [SerializeField] private GameObject targetFollow;
+    private GameObject target;
     [Range(20f, 200f)]
     [SerializeField] private float rotateSpeed;
     private float rotateXAxis;
@@ -77,29 +82,41 @@ public class CameraController : MonoBehaviour
     {
         rotateXAxis = context.ReadValue<Vector2>().x;
 
-        this.transform.RotateAround(target.transform.position, Vector3.up * Mathf.Sign(rotateXAxis), rotateSpeed * Time.deltaTime);
+        this.transform.RotateAround(targetLookAt.transform.position, Vector3.up * Mathf.Sign(rotateXAxis), rotateSpeed * Time.deltaTime);
     }
 
-    public void OnMouseClick(InputAction.CallbackContext context)
+    public void ChangeCameraFocus(RaycastHit rayHit)
     {
-        if (!context.canceled)
-            return;
-
-        RaycastHit rayHit;
-
-        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-        if (Physics.Raycast(ray, out rayHit))
+        if (rayHit.transform.tag != targetLookAt.transform.parent.transform.tag)
         {
-            if (rayHit.transform != null)
+            if (rayHit.transform.tag == "NPC")
             {
-                if(rayHit.transform.tag == "NPC")
-                {
-                    target = rayHit.collider.gameObject;
-                    this.transform.SetParent(target.transform);
-                    this.transform.forward = target.transform.forward;
-                    StartCoroutine(CameraTransitionCoroutine(this.transform.localPosition));
-                }
+                target = rayHit.collider.gameObject;
+                targetLookAt.transform.SetParent(target.transform);
+                
             }
+            else
+            {
+                target = worldGameObject;
+                targetLookAt.transform.position = rayHit.point;
+                targetLookAt.transform.SetParent(target.transform);
+            }
+
+            StartCoroutine(CameraTransitionCoroutine(targetLookAt.transform.localPosition));
+        }
+    }
+
+    public void ChangeActiveCamera()
+    {
+        targetFollow.transform.forward = target.transform.forward;
+
+        CinemachineVirtualCamera targetCamera = targetCameras.GetValueOrDefault(targetFollow);
+        foreach (CinemachineVirtualCamera virtualCamera in cinemachineCameras)
+        {
+            virtualCamera.enabled = virtualCamera == targetCamera;
+            activeCinemachineCamera = targetCamera;
+            cinemachineFollow = activeCinemachineCamera.GetCinemachineComponent<CinemachineTransposer>();
+            followOffset = cinemachineFollow.m_FollowOffset;
         }
     }
 
@@ -115,14 +132,5 @@ public class CameraController : MonoBehaviour
         }
 
         this.transform.localPosition = Vector3.zero;
-
-        CinemachineVirtualCamera targetCamera = targetCameras.GetValueOrDefault(target);
-        foreach (CinemachineVirtualCamera virtualCamera in cinemachineCameras)
-        {
-            virtualCamera.enabled = virtualCamera == targetCamera;
-            activeCinemachineCamera = targetCamera;
-            cinemachineFollow = activeCinemachineCamera.GetCinemachineComponent<CinemachineTransposer>();
-            followOffset = cinemachineFollow.m_FollowOffset;
-        }
     }
 }
