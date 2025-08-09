@@ -10,7 +10,6 @@ public class NPCController : MonoBehaviour
     private Vector3 nextPosition;
     [SerializeField] NavMeshAgent agent;
     [SerializeField] private Animator animator;
-    [SerializeField] private ControlOptions controlOptions;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()

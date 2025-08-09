@@ -93,7 +93,8 @@ public class CameraManager : MonoBehaviour
             {
                 target = rayHit.collider.gameObject;
                 targetLookAt.transform.SetParent(target.transform);
-                
+                targetLookAt.transform.localPosition = Vector3.zero;
+
             }
             else
             {

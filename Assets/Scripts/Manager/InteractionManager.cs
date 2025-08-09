@@ -4,7 +4,7 @@ using UnityEngine.InputSystem;
 
 public class InteractionManager : MonoBehaviour
 {
-    public UnityEvent<RaycastHit> onClickCameraEvent;
+    public UnityEvent<RaycastHit> onClickCameraLookAtEvent;
 
     [Header("Camera parameters")]
     [SerializeField] private Camera mainCamera;
@@ -34,7 +34,7 @@ public class InteractionManager : MonoBehaviour
         {
             if (rayHit.transform != null)
             {
-                onClickCameraEvent?.Invoke(rayHit);
+                onClickCameraLookAtEvent?.Invoke(rayHit);
                 if(rayHit.transform.gameObject.TryGetComponent(out ControlOptions controlOptions))
                 {
                     controlOptions.DisplayControlOptions();
