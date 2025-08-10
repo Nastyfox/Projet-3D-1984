@@ -7,16 +7,14 @@ public class ControlOptions : MonoBehaviour
     [SerializeField] private Canvas canvasControlOptions;
     [SerializeField] private Camera mainCamera;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    private void OnEnable()
     {
-        
+        InteractionManager.clickOnElementEvent += DisplayControlOptions;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void OnDisable()
     {
-        
+        InteractionManager.clickOnElementEvent -= DisplayControlOptions;
     }
 
     private void LateUpdate()
@@ -24,8 +22,11 @@ public class ControlOptions : MonoBehaviour
         canvasControlOptions.transform.LookAt(canvasControlOptions.transform.position + mainCamera.transform.rotation * Vector3.forward, mainCamera.transform.rotation * Vector3.up);
     }
 
-    public void DisplayControlOptions()
+    public void DisplayControlOptions(RaycastHit rayHit)
     {
+        if (rayHit.transform != this.transform)
+            return;
+
         foreach (GameObject controlOption in controlOptions)
         {
             if (controlOption != null)

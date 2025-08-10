@@ -36,6 +36,15 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private float rotateSpeed;
     private float rotateXAxis;
 
+    private void OnEnable()
+    {
+        InteractionManager.clickOnElementEvent += ChangeCameraFocus;
+    }
+
+    private void OnDisable()
+    {
+        InteractionManager.clickOnElementEvent -= ChangeCameraFocus;
+    }
 
     private void Awake()
     {
@@ -82,11 +91,12 @@ public class CameraManager : MonoBehaviour
     {
         rotateXAxis = context.ReadValue<Vector2>().x;
 
-        this.transform.RotateAround(targetLookAt.transform.position, Vector3.up * Mathf.Sign(rotateXAxis), rotateSpeed * Time.deltaTime);
+        targetFollow.transform.RotateAround(targetLookAt.transform.position, Vector3.up * Mathf.Sign(rotateXAxis), rotateSpeed * Time.deltaTime);
     }
 
     public void ChangeCameraFocus(RaycastHit rayHit)
     {
+        Debug.Log(rayHit.transform.tag + " " + targetLookAt.transform.parent.transform.tag);
         if (rayHit.transform.tag != targetLookAt.transform.parent.transform.tag)
         {
             if (rayHit.transform.tag == "NPC")
@@ -94,7 +104,6 @@ public class CameraManager : MonoBehaviour
                 target = rayHit.collider.gameObject;
                 targetLookAt.transform.SetParent(target.transform);
                 targetLookAt.transform.localPosition = Vector3.zero;
-
             }
             else
             {
@@ -109,9 +118,11 @@ public class CameraManager : MonoBehaviour
 
     public void ChangeActiveCamera()
     {
+        targetFollow.transform.SetParent(target.transform);
+        targetFollow.transform.localPosition = Vector3.zero;
         targetFollow.transform.forward = target.transform.forward;
 
-        CinemachineVirtualCamera targetCamera = targetCameras.GetValueOrDefault(targetFollow);
+        CinemachineVirtualCamera targetCamera = targetCameras.GetValueOrDefault(targetFollow.transform.parent.gameObject);
         foreach (CinemachineVirtualCamera virtualCamera in cinemachineCameras)
         {
             virtualCamera.enabled = virtualCamera == targetCamera;
