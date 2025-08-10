@@ -10,7 +10,7 @@ public class StateController : MonoBehaviour
 
     void Start()
     {
-        ChangeState(idleState);
+        ChangeState(patrolState);
     }
 
     public void ChangeState(IState newState)

@@ -1,29 +1,40 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
+using static UnityEngine.UI.Image;
 
 [System.Serializable]
 public class PatrolState : IState
 {
-    [SerializeField] private float patrolSpeed = 5;
-    [SerializeField] private float lookForDistance = 3;
-    [SerializeField] private int waypoint;
-    [SerializeField] private List<Transform> waypoints;
+    [SerializeField] List<Vector3> movementPositions = new List<Vector3>();
+    private Vector3 nextPosition;
+    [SerializeField] NavMeshAgent agent;
+    [SerializeField] private Animator animator;
+
+    [SerializeField] private float lookForDistance;
+    [SerializeField] private float maxAngleDetection;
 
     private Transform myTransform;
-    private RaycastHit hitInfo;
+    private Transform targetDetected;
+
+    private bool characterDetected;
 
     public void OnEntry(StateController controller)
     {
+        animator.speed = agent.speed / 8f;
         myTransform = controller.transform;
+        nextPosition = movementPositions[1];
+        characterDetected = false;
     }
 
     public void OnUpdate(StateController controller)
     {
         Patrol();
-        if (LookForPlayer())
+        if (LookForCharacter() && !characterDetected)
         {
-            controller.chaseState.SetTarget(hitInfo.transform);
+            controller.chaseState.SetTarget(targetDetected);
             controller.ChangeState(controller.chaseState);
+            characterDetected = true;
         }
     }
 
@@ -32,13 +43,26 @@ public class PatrolState : IState
         // This will be called when first entering the state
     }
 
-    bool LookForPlayer()
+    public bool LookForCharacter()
     {
-        if (Physics.Raycast(myTransform.position, myTransform.forward, out hitInfo, lookForDistance))
+        Vector3 startPositionRaycast = myTransform.position + Vector3.up * 0.5f;
+        Vector3 raycastDirection = myTransform.forward;
+
+        Collider[] hitColliders = Physics.OverlapSphere(startPositionRaycast, lookForDistance);
+
+        for(int i = 0; i < hitColliders.Length; i++)
         {
-            if (hitInfo.collider.tag == "Player")
+            Vector3 hitPoint = hitColliders[i].transform.position;
+            Vector3 directionToHit = hitPoint - startPositionRaycast;
+            float angleToHit = Vector3.Angle(raycastDirection, directionToHit);
+
+            if(angleToHit < maxAngleDetection)
             {
-                return true;
+                if (hitColliders[i].tag == "ControllableCharacter")
+                {
+                    targetDetected = hitColliders[i].transform;
+                    return true;
+                }
             }
         }
 
@@ -47,16 +71,23 @@ public class PatrolState : IState
 
     void Patrol()
     {
-        if (myTransform.position != waypoints[waypoint].position)
+        agent.SetDestination(nextPosition);
+
+        if (agent.velocity.magnitude != 0f)
         {
-            myTransform.position = Vector3.MoveTowards(myTransform.position, waypoints[waypoint].position, patrolSpeed * Time.deltaTime);
+            animator.SetBool("isWalking", true);
         }
-        else
+
+        if (!agent.pathPending)
         {
-            waypoint++;
-            if (waypoint >= waypoints.Count)
+            if (agent.remainingDistance <= agent.stoppingDistance)
             {
-                waypoint = 0;
+                if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
+                {
+                    animator.SetBool("isWalking", false);
+                    int nextIndex = Random.Range(0, movementPositions.Count);
+                    nextPosition = movementPositions[nextIndex];
+                }
             }
         }
     }

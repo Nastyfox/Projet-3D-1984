@@ -96,10 +96,9 @@ public class CameraManager : MonoBehaviour
 
     public void ChangeCameraFocus(RaycastHit rayHit)
     {
-        Debug.Log(rayHit.transform.tag + " " + targetLookAt.transform.parent.transform.tag);
         if (rayHit.transform.tag != targetLookAt.transform.parent.transform.tag)
         {
-            if (rayHit.transform.tag == "NPC")
+            if (rayHit.transform.tag == "NPC" || rayHit.transform.tag == "ControllableCharacter")
             {
                 target = rayHit.collider.gameObject;
                 targetLookAt.transform.SetParent(target.transform);
@@ -110,6 +109,7 @@ public class CameraManager : MonoBehaviour
                 target = worldGameObject;
                 targetLookAt.transform.position = rayHit.point;
                 targetLookAt.transform.SetParent(target.transform);
+                targetFollow.transform.SetParent(target.transform);
             }
 
             StartCoroutine(CameraTransitionCoroutine(targetLookAt.transform.localPosition));

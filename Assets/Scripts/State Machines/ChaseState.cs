@@ -1,22 +1,29 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 [System.Serializable]
 public class ChaseState : IState
 {
-    [SerializeField] private float chaseSpeed = 8;
-    [SerializeField] private float loseDistance = 3;
+    [SerializeField] NavMeshAgent agent;
+    [SerializeField] private Animator animator;
 
     private Transform myTransform;
     [HideInInspector] private Transform target;
 
+    [SerializeField] private float loseDistance;
+
     public void OnEntry(StateController controller)
     {
+        Debug.Log("Chase State: Entering chase state");
+        agent.speed *= 2f; // Increase speed for chase
+        animator.speed = agent.speed / 8f;
         myTransform = controller.transform;
+        agent.SetDestination(target.position);
     }
 
     public void OnUpdate(StateController controller)
     {
-        if (PlayerLost())
+        if (!controller.patrolState.LookForCharacter())
         {
             controller.ChangeState(controller.patrolState);
         }
@@ -28,7 +35,7 @@ public class ChaseState : IState
 
     public void OnExit(StateController controller)
     {
-        // "Must've been the wind"
+        Debug.Log("Chase State: Exiting chase state");
     }
 
     public void SetTarget(Transform targetTransform)
@@ -38,7 +45,7 @@ public class ChaseState : IState
 
     void Chase()
     {
-        myTransform.position = Vector3.MoveTowards(myTransform.position, target.position, chaseSpeed * Time.deltaTime);
+        agent.SetDestination(target.position);
     }
 
     bool PlayerLost()
