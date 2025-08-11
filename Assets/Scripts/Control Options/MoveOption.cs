@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 
 public class MoveOption : MonoBehaviour
@@ -6,39 +5,42 @@ public class MoveOption : MonoBehaviour
     [SerializeField] private MeshRenderer moveCursorRenderer;
     private bool isCursorVisible = false;
 
+    [SerializeField] private ControlsStateController controlsStateController;
+
     private void OnEnable()
     {
-        InteractionManager.clickToMoveEvent += DeactivateMoveCursor;
+        MoveControlsState.clickToMoveEvent += DeactivateMoveCursor;
     }
 
     private void OnDisable()
     {
-        InteractionManager.clickToMoveEvent -= DeactivateMoveCursor;
+        MoveControlsState.clickToMoveEvent -= DeactivateMoveCursor;
     }
 
     void Update()
     {
         if(isCursorVisible)
         {
-            DisplayMoveCursor();
+            MoveCursorOnMousePosition();
         }
     }
 
     public void ActivateMoveCursor()
     {
+        MoveCursorOnMousePosition();
         isCursorVisible = true;
         moveCursorRenderer.enabled = isCursorVisible; // Show the cursor
-        PlayerInputManager.SwitchActionMap("MoveControl"); // Switch to the MoveCursor action map
+        controlsStateController.ChangeState(controlsStateController.moveControlsState); // Switch to MoveControlsState
     }
 
-    public void DeactivateMoveCursor(Vector3 position)
+    public void DeactivateMoveCursor(RaycastHit raycastHit, bool grab)
     {
         isCursorVisible = false;
         moveCursorRenderer.enabled = isCursorVisible; // Hide the cursor
-        PlayerInputManager.SwitchActionMap("GlobalControl"); // Switch to the MoveCursor action map
+        controlsStateController.ChangeState(controlsStateController.globalControlsState); // Switch to MoveControlsState
     }
 
-    private void DisplayMoveCursor()
+    private void MoveCursorOnMousePosition()
     {
         //Display move cursor on ground where mouse is pointing
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

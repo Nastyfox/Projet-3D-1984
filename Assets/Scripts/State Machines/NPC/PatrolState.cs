@@ -4,7 +4,7 @@ using UnityEngine.AI;
 using static UnityEngine.UI.Image;
 
 [System.Serializable]
-public class PatrolState : IState
+public class PatrolState : IStateNPC
 {
     [SerializeField] List<Vector3> movementPositions = new List<Vector3>();
     private Vector3 nextPosition;
@@ -19,7 +19,7 @@ public class PatrolState : IState
 
     private bool characterDetected;
 
-    public void OnEntry(StateController controller)
+    public void OnEntry(NPCStateController controller)
     {
         animator.speed = agent.speed / 8f;
         myTransform = controller.transform;
@@ -27,7 +27,7 @@ public class PatrolState : IState
         characterDetected = false;
     }
 
-    public void OnUpdate(StateController controller)
+    public void OnUpdate(NPCStateController controller)
     {
         Patrol();
         if (LookForCharacter() && !characterDetected)
@@ -38,7 +38,7 @@ public class PatrolState : IState
         }
     }
 
-    public void OnExit(StateController controller)
+    public void OnExit(NPCStateController controller)
     {
         // This will be called when first entering the state
     }

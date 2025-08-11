@@ -6,15 +6,16 @@ using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
+[RequireComponent(typeof(ControlsStateController))]
 public class InteractionManager : MonoBehaviour
 {
-    public static event Action<RaycastHit> clickOnElementEvent;
-    public static event Action<Vector3> clickToMoveEvent;
     [SerializeField] private GraphicRaycaster graphicRaycaster;
     [SerializeField] private EventSystem eventSystem;
 
     [Header("Camera parameters")]
     [SerializeField] private Camera mainCamera;
+
+    [SerializeField] private ControlsStateController controlsStateController;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -28,7 +29,7 @@ public class InteractionManager : MonoBehaviour
         
     }
 
-    public void OnGlobalMouseClick(InputAction.CallbackContext context)
+    public void OnMouseClick(InputAction.CallbackContext context)
     {
         if (!context.canceled)
             return;
@@ -42,34 +43,16 @@ public class InteractionManager : MonoBehaviour
         // "results" stores a list of all the objects hit by the graphic raycast. If the number of results is zero, you know you're in the clear and there are no UI elements underneath the mouse.
         if (results.Count == 0)
         {
-            RaycastHit rayHit;
+            RaycastHit raycastHit;
 
             Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
 
-            if (Physics.Raycast(ray, out rayHit))
+            if (Physics.Raycast(ray, out raycastHit))
             {
-                if (rayHit.transform != null)
+                if (raycastHit.transform != null)
                 {
-                    clickOnElementEvent?.Invoke(rayHit);
+                    controlsStateController.OnMouseClick(raycastHit);
                 }
-            }
-        }
-    }
-
-    public void OnMoveMouseClick(InputAction.CallbackContext context)
-    {
-        if (!context.canceled)
-            return;
-
-        RaycastHit rayHit;
-
-        Ray ray = mainCamera.ScreenPointToRay(Mouse.current.position.ReadValue());
-
-        if (Physics.Raycast(ray, out rayHit))
-        {
-            if (rayHit.transform != null)
-            {
-                clickToMoveEvent?.Invoke(rayHit.point);
             }
         }
     }

@@ -3,7 +3,7 @@
     "name": "InputSystem_Actions",
     "maps": [
         {
-            "name": "GlobalControl",
+            "name": "Controls",
             "id": "df70fa95-8a34-4494-b137-73ab6b9c7d37",
             "actions": [
                 {
@@ -82,34 +82,6 @@
                 {
                     "name": "",
                     "id": "a4ece98e-2b4b-4a36-81f4-1e8108cebd3a",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "Click",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                }
-            ]
-        },
-        {
-            "name": "MoveControl",
-            "id": "da5630c0-6797-4f68-83cb-2fb168c4b61d",
-            "actions": [
-                {
-                    "name": "Click",
-                    "type": "Button",
-                    "id": "92c07ba8-2839-40af-9945-3194ce183b62",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                }
-            ],
-            "bindings": [
-                {
-                    "name": "",
-                    "id": "14a174d4-dfcd-4c93-b671-35d98a1fd154",
                     "path": "<Mouse>/leftButton",
                     "interactions": "",
                     "processors": "",

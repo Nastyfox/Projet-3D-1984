@@ -36,14 +36,16 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private float rotateSpeed;
     private float rotateXAxis;
 
+    [SerializeField] private ControlsStateController controlsStateController;
+
     private void OnEnable()
     {
-        InteractionManager.clickOnElementEvent += ChangeCameraFocus;
+        GlobalControlsState.clickOnElementEvent += ChangeCameraFocus;
     }
 
     private void OnDisable()
     {
-        InteractionManager.clickOnElementEvent -= ChangeCameraFocus;
+        GlobalControlsState.clickOnElementEvent -= ChangeCameraFocus;
     }
 
     private void Awake()
@@ -94,20 +96,20 @@ public class CameraManager : MonoBehaviour
         targetFollow.transform.RotateAround(targetLookAt.transform.position, Vector3.up * Mathf.Sign(rotateXAxis), rotateSpeed * Time.deltaTime);
     }
 
-    public void ChangeCameraFocus(RaycastHit rayHit)
+    private void ChangeCameraFocus(RaycastHit raycastHit)
     {
-        if (rayHit.transform.tag != targetLookAt.transform.parent.transform.tag)
+        if (raycastHit.transform.tag != targetLookAt.transform.parent.transform.tag)
         {
-            if (rayHit.transform.tag == "NPC" || rayHit.transform.tag == "ControllableCharacter")
+            if (raycastHit.transform.tag == "NPC" || raycastHit.transform.tag == "ControllableCharacter")
             {
-                target = rayHit.collider.gameObject;
+                target = raycastHit.collider.gameObject;
                 targetLookAt.transform.SetParent(target.transform);
                 targetLookAt.transform.localPosition = Vector3.zero;
             }
             else
             {
                 target = worldGameObject;
-                targetLookAt.transform.position = rayHit.point;
+                targetLookAt.transform.position = raycastHit.point;
                 targetLookAt.transform.SetParent(target.transform);
                 targetFollow.transform.SetParent(target.transform);
             }
@@ -118,6 +120,8 @@ public class CameraManager : MonoBehaviour
 
     public void ChangeActiveCamera()
     {
+        controlsStateController.ChangeState(controlsStateController.followControlsState);
+
         targetFollow.transform.SetParent(target.transform);
         targetFollow.transform.localPosition = Vector3.zero;
         targetFollow.transform.forward = target.transform.forward;
@@ -130,6 +134,8 @@ public class CameraManager : MonoBehaviour
             cinemachineFollow = activeCinemachineCamera.GetCinemachineComponent<CinemachineTransposer>();
             followOffset = cinemachineFollow.m_FollowOffset;
         }
+
+        controlsStateController.ChangeState(controlsStateController.globalControlsState);
     }
 
     IEnumerator CameraTransitionCoroutine(Vector3 startPosition)

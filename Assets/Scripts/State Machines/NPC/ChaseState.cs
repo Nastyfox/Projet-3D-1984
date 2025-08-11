@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [System.Serializable]
-public class ChaseState : IState
+public class ChaseState : IStateNPC
 {
     [SerializeField] NavMeshAgent agent;
     [SerializeField] private Animator animator;
@@ -12,7 +12,7 @@ public class ChaseState : IState
 
     [SerializeField] private float loseDistance;
 
-    public void OnEntry(StateController controller)
+    public void OnEntry(NPCStateController controller)
     {
         Debug.Log("Chase State: Entering chase state");
         agent.speed *= 2f; // Increase speed for chase
@@ -21,7 +21,7 @@ public class ChaseState : IState
         agent.SetDestination(target.position);
     }
 
-    public void OnUpdate(StateController controller)
+    public void OnUpdate(NPCStateController controller)
     {
         if (!controller.patrolState.LookForCharacter())
         {
@@ -33,7 +33,7 @@ public class ChaseState : IState
         }
     }
 
-    public void OnExit(StateController controller)
+    public void OnExit(NPCStateController controller)
     {
         Debug.Log("Chase State: Exiting chase state");
     }

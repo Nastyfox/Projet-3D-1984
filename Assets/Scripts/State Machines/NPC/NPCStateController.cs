@@ -1,8 +1,8 @@
 using UnityEngine;
 
-public class StateController : MonoBehaviour
+public class NPCStateController : MonoBehaviour
 {
-    public IState currentState;
+    public IStateNPC currentState;
 
     public IdleState idleState = new IdleState();
     public PatrolState patrolState = new PatrolState();
@@ -13,7 +13,7 @@ public class StateController : MonoBehaviour
         ChangeState(patrolState);
     }
 
-    public void ChangeState(IState newState)
+    public void ChangeState(IStateNPC newState)
     {
         if (currentState != null)
         {
