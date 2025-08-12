@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class DropOption : MonoBehaviour
@@ -9,6 +10,10 @@ public class DropOption : MonoBehaviour
     private GameObject displayDropObject;
 
     [SerializeField] private ControlsStateController controlsStateController;
+
+    [SerializeField] private Transform interactableElementsParent;
+
+    public static event Action<Transform> objectDroppedEvent;
 
     private void OnEnable()
     {
@@ -69,8 +74,9 @@ public class DropOption : MonoBehaviour
     {
         if (objectGrabbed != null)
         {
+            objectDroppedEvent?.Invoke(objectGrabbed.transform);
             objectGrabbed.transform.position = raycastHit.point; // Set the position of the dropped object
-            objectGrabbed.transform.SetParent(null); // Detach the object from the parent
+            objectGrabbed.transform.SetParent(interactableElementsParent); // Detach the object from the parent
             objectGrabbed = null; // Clear the reference to the dropped object
             isCursorVisible = false;
             Destroy(displayDropObject);

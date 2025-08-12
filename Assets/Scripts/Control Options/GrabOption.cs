@@ -1,6 +1,5 @@
 using System;
 using UnityEngine;
-using UnityEngine.AI;
 
 public class GrabOption : MonoBehaviour
 {
@@ -8,6 +7,8 @@ public class GrabOption : MonoBehaviour
     [SerializeField] private GameObject objectGrabbedParent;
 
     public static event Action<Transform> objectGrabbedEvent;
+
+    [SerializeField] private GameObject character;
 
 
     private void OnEnable()
@@ -45,6 +46,8 @@ public class GrabOption : MonoBehaviour
         {
             objectToGrab.SetParent(objectGrabbedParent.transform);
             objectToGrab.transform.localPosition = Vector3.zero;
+            objectToGrab.transform.localRotation = Quaternion.identity;
+            objectToGrab.GetComponent<Rigidbody>().isKinematic = true; // Make the object kinematic to prevent physics interactions while grabbed
             objectGrabbedEvent?.Invoke(objectToGrab);
         }
     }

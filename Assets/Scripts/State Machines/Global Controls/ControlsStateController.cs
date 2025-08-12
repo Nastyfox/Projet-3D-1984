@@ -10,6 +10,8 @@ public class ControlsStateController : MonoBehaviour
     public GrabControlState grabControlState = new GrabControlState();
     public FollowControlsState followControlsState = new FollowControlsState();
     public DropControlsState dropControlsState = new DropControlsState();
+    public ThrowControlsState throwControlsState = new ThrowControlsState();
+    public DisplayControlsState displayControlsState = new DisplayControlsState();
 
     void Start()
     {

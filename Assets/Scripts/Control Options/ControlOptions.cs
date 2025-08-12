@@ -8,24 +8,34 @@ public class ControlOptions : MonoBehaviour
     [SerializeField] private Canvas canvasControlOptions;
     [SerializeField] private Camera mainCamera;
 
+    [SerializeField] private ControlsStateController controlsStateController;
+
     private void OnEnable()
     {
         GlobalControlsState.clickOnElementEvent += DisplayControlOptions;
+        GrabOption.objectGrabbedEvent += DisplayGrabbedObjectOptions;
+        ThrowOption.objectThrownEvent += DisplayGrabbedObjectOptions;
+        DropOption.objectDroppedEvent += DisplayGrabbedObjectOptions;
         MoveControlsState.clickToMoveEvent += HideControlOptions;
         GrabControlState.clickToGrabEvent += HideControlOptions;
         DropControlsState.clickToDropObjectEvent += HideControlOptions;
         FollowControlsState.followEvent += HideControlOptions;
-        GrabOption.objectGrabbedEvent += DisplayGrabbedObjectOptions;
+        ThrowControlsState.clickToThrowObjectEvent += HideControlOptions;
+        DisplayControlsState.clickToCloseControls += HideControlOptions;
     }
 
     private void OnDisable()
     {
         GlobalControlsState.clickOnElementEvent -= DisplayControlOptions;
+        GrabOption.objectGrabbedEvent -= DisplayGrabbedObjectOptions;
+        ThrowOption.objectThrownEvent -= DisplayGrabbedObjectOptions;
+        DropOption.objectDroppedEvent -= DisplayGrabbedObjectOptions;
         MoveControlsState.clickToMoveEvent -= HideControlOptions;
         GrabControlState.clickToGrabEvent -= HideControlOptions;
         DropControlsState.clickToDropObjectEvent -= HideControlOptions;
         FollowControlsState.followEvent -= HideControlOptions;
-        GrabOption.objectGrabbedEvent -= DisplayGrabbedObjectOptions;
+        ThrowControlsState.clickToThrowObjectEvent -= HideControlOptions;
+        DisplayControlsState.clickToCloseControls -= HideControlOptions;
     }
 
     private void LateUpdate()
@@ -47,6 +57,8 @@ public class ControlOptions : MonoBehaviour
                 controlOption.SetActive(true);
             }
         }
+
+        controlsStateController.ChangeState(controlsStateController.displayControlsState); // Switch to GlobalControlsState
     }
 
     private void HideControlOptions(RaycastHit raycastHit, bool grab)
@@ -58,6 +70,8 @@ public class ControlOptions : MonoBehaviour
                 controlOption.SetActive(false);
             }
         }
+
+        controlsStateController.ChangeState(controlsStateController.globalControlsState); // Switch to GlobalControlsState
     }
 
     private void DisplayGrabbedObjectOptions(Transform grabbedObject)
