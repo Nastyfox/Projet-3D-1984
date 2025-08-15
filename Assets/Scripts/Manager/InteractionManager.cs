@@ -15,7 +15,7 @@ public class InteractionManager : MonoBehaviour
     [Header("Camera parameters")]
     [SerializeField] private Camera mainCamera;
 
-    [SerializeField] private ControlsStateController controlsStateController;
+    private ControlsStateController currentControlsStateController;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -51,7 +51,15 @@ public class InteractionManager : MonoBehaviour
             {
                 if (raycastHit.transform != null)
                 {
-                    controlsStateController.OnMouseClick(raycastHit);
+                    if (raycastHit.collider.gameObject.GetComponent<ControlsStateController>())
+                    {
+                        currentControlsStateController = raycastHit.collider.gameObject.GetComponent<ControlsStateController>();
+                    }
+
+                    if (currentControlsStateController != null)
+                    {
+                        currentControlsStateController.OnMouseClick(raycastHit);
+                    }
                 }
             }
         }

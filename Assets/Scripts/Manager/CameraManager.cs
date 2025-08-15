@@ -36,18 +36,6 @@ public class CameraManager : MonoBehaviour
     [SerializeField] private float rotateSpeed;
     private float rotateXAxis;
 
-    [SerializeField] private ControlsStateController controlsStateController;
-
-    private void OnEnable()
-    {
-        GlobalControlsState.clickOnElementEvent += ChangeCameraFocus;
-    }
-
-    private void OnDisable()
-    {
-        GlobalControlsState.clickOnElementEvent -= ChangeCameraFocus;
-    }
-
     private void Awake()
     {
         foreach (CinemachineVirtualCamera virtualCamera in FindObjectsByType<CinemachineVirtualCamera>(FindObjectsSortMode.None))
@@ -96,7 +84,7 @@ public class CameraManager : MonoBehaviour
         targetFollow.transform.RotateAround(targetLookAt.transform.position, Vector3.up * Mathf.Sign(rotateXAxis), rotateSpeed * Time.deltaTime);
     }
 
-    private void ChangeCameraFocus(RaycastHit raycastHit)
+    public void ChangeCameraFocus(RaycastHit raycastHit)
     {
         if (raycastHit.transform.tag != targetLookAt.transform.parent.transform.tag)
         {
@@ -120,8 +108,6 @@ public class CameraManager : MonoBehaviour
 
     public void ChangeActiveCamera()
     {
-        controlsStateController.ChangeState(controlsStateController.followControlsState);
-
         targetFollow.transform.SetParent(target.transform);
         targetFollow.transform.localPosition = Vector3.zero;
         targetFollow.transform.forward = target.transform.forward;
@@ -134,8 +120,6 @@ public class CameraManager : MonoBehaviour
             cinemachineFollow = activeCinemachineCamera.GetCinemachineComponent<CinemachineTransposer>();
             followOffset = cinemachineFollow.m_FollowOffset;
         }
-
-        controlsStateController.ChangeState(controlsStateController.globalControlsState);
     }
 
     IEnumerator CameraTransitionCoroutine(Vector3 startPosition)

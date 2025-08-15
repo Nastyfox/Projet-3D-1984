@@ -1,27 +1,16 @@
 using System;
 using UnityEngine;
 
-public class FollowControlsState : IStateControls
+public class FollowControlsState : StateControls
 {
-    public static event Action<RaycastHit, bool> followEvent;
-
-    public void OnEntry(ControlsStateController controller)
+    protected override void OnEntry()
     {
-        followEvent?.Invoke(new RaycastHit(), false);
+        controlsStateController.cameraManager.ChangeActiveCamera();
     }
 
-    public void OnUpdate(ControlsStateController controller)
+    protected override void OnMouseClick(RaycastHit raycastHit)
     {
+        controlsStateController.ChangeState(controlsStateController.globalControlsState);
 
-    }
-
-    public void OnExit(ControlsStateController controller)
-    {
-
-    }
-
-    public void OnMouseClick(ControlsStateController controller, RaycastHit raycastHit)
-    {
-    
     }
 }

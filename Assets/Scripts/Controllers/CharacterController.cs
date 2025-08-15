@@ -10,27 +10,8 @@ public class CharacterController : MonoBehaviour
     [SerializeField] private Animator animator;
 
     [SerializeField] private float distanceToGrabObject = 1.0f; // Distance to offset when grabbing an object
-    private RaycastHit raycastHit;
-    private bool tryGrabObject = false;
-    private bool tryDropObject = false;
-    public static event Action<RaycastHit> tryGrabObjectEvent;
-    public static event Action<RaycastHit> tryDropObjectEvent;
-    [SerializeField] private ControlsStateController controlsStateController;
 
-
-    private void OnEnable()
-    {
-        MoveControlsState.clickToMoveEvent += MoveToPosition;
-        GrabControlState.clickToGrabEvent += MoveToObject;
-        DropControlsState.clickToDropObjectEvent += MoveToObject;
-    }
-
-    private void OnDisable()
-    {
-        MoveControlsState.clickToMoveEvent -= MoveToPosition;
-        GrabControlState.clickToGrabEvent -= MoveToObject;
-        DropControlsState.clickToDropObjectEvent -= MoveToObject;
-    }
+    public static event Action destinationReached;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -52,17 +33,8 @@ public class CharacterController : MonoBehaviour
             {
                 if (!agent.hasPath || agent.velocity.sqrMagnitude == 0f)
                 {
-                    if(tryGrabObject)
-                    {
-                        tryGrabObjectEvent?.Invoke(raycastHit);
-                        tryGrabObject = false; // Reset the flag after trying to grab the object
-                    }
+                    destinationReached?.Invoke();
 
-                    if(tryDropObject)
-                    {
-                        tryDropObjectEvent?.Invoke(raycastHit); // Notify that the character is trying to drop an object
-                        tryDropObject = false;
-                    }
                     animator.SetBool("isWalking", false);
                     agent.ResetPath(); // Reset the path to stop the agent
                 }
@@ -70,28 +42,21 @@ public class CharacterController : MonoBehaviour
         }
     }
 
-    private void MoveToPosition(RaycastHit raycastHit, bool grab)
+    public void MoveToPosition(RaycastHit raycastHit)
     {
         agent.SetDestination(raycastHit.point);
     }
 
-    private void MoveToObject(RaycastHit raycastHit, bool grab)
+    public void MoveToObject(RaycastHit raycastHit)
     {
         Vector3 directionToObject = raycastHit.point - transform.position;
         Vector3 positionWithOffset = raycastHit.point - directionToObject.normalized * distanceToGrabObject; // Offset to avoid collision
-        this.raycastHit = raycastHit;
-
-        if(grab)
-        {
-            tryGrabObject = true;
-        }
-        else
-        {
-            tryDropObject = true;
-        }
 
         agent.SetDestination(positionWithOffset);
+    }
 
-        controlsStateController.ChangeState(controlsStateController.globalControlsState); // Switch back to GlobalControlsState
+    public void FollowMoveCursor(Vector3 pointToLookAt)
+    {
+        this.transform.LookAt(pointToLookAt);
     }
 }

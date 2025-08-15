@@ -1,27 +1,26 @@
 using System;
 using UnityEngine;
 
-public class ThrowControlsState : IStateControls
+public class ThrowControlsState : StateControls
 {
-    public static event Action<RaycastHit, bool> clickToThrowObjectEvent;
+    private Vector3 mousePosition;
 
-    public void OnEntry(ControlsStateController controller)
+    protected override void OnEntry()
     {
-
+        controlsStateController.throwController.ActivateThrowTrajectory();
     }
 
-    public void OnUpdate(ControlsStateController controller)
+    protected override void OnUpdate()
     {
-
+        mousePosition = controlsStateController.throwController.GetMousePosition();
+        controlsStateController.throwController.SimulateTrajectory();
+        controlsStateController.characterController.FollowMoveCursor(mousePosition);
     }
 
-    public void OnExit(ControlsStateController controller)
+    protected override void OnMouseClick(RaycastHit raycast)
     {
-
-    }
-
-    public void OnMouseClick(ControlsStateController controller, RaycastHit raycastHit)
-    {
-        clickToThrowObjectEvent?.Invoke(raycastHit, false);
+        controlsStateController.throwController.LaunchObject();
+        controlsStateController.controlOptions.ChangeStateGrabbedObjectOptions();
+        controlsStateController.ChangeState(controlsStateController.globalControlsState);
     }
 }

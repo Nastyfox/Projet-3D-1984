@@ -1,26 +1,26 @@
 using System;
 using UnityEngine;
 
-public class DisplayControlsState : IStateControls
+public class DisplayControlsState : StateControls
 {
     public static event Action<RaycastHit, bool> clickToCloseControls;
 
-    public void OnEntry(ControlsStateController controller)
+    protected override void OnEntry()
     {
 
     }
 
-    public void OnUpdate(ControlsStateController controller)
+    protected override void OnUpdate()
     {
 
     }
 
-    public void OnExit(ControlsStateController controller)
+    protected override void OnExit()
     {
 
     }
 
-    public void OnMouseClick(ControlsStateController controller, RaycastHit raycastHit)
+    protected override void OnMouseClick(RaycastHit raycastHit)
     {
         clickToCloseControls?.Invoke(raycastHit, false);
     }

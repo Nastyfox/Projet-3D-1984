@@ -474,7 +474,6 @@ GameObject:
   - component: {fileID: 57001542}
   - component: {fileID: 57001541}
   - component: {fileID: 57001540}
-  - component: {fileID: 57001538}
   m_Layer: 0
   m_Name: MoveCursor
   m_TagString: Untagged
@@ -482,20 +481,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &57001538
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 57001537}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 91b26b3f42c0118478f685be078b9e57, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  moveCursorRenderer: {fileID: 57001540}
-  controlsStateController: {fileID: 78334107}
 --- !u!23 &57001540
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -599,7 +584,6 @@ MonoBehaviour:
   graphicRaycaster: {fileID: 894828885}
   eventSystem: {fileID: 28876423}
   mainCamera: {fileID: 330585545}
-  controlsStateController: {fileID: 78334107}
 --- !u!4 &78334103
 Transform:
   m_ObjectHideFlags: 0
@@ -637,7 +621,6 @@ MonoBehaviour:
   targetLookAt: {fileID: 1198851986}
   targetFollow: {fileID: 1831476551}
   rotateSpeed: 100
-  controlsStateController: {fileID: 78334107}
 --- !u!114 &78334105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -723,11 +706,20 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 78334101}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 45b3fc7d6aac1ff4f881c0a1d58aabf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveCursor: {fileID: 0}
+  objectGrabbedParent: {fileID: 0}
+  interactableElementsParent: {fileID: 0}
+  displayDropObject: {fileID: 0}
+  characterController: {fileID: 0}
+  controlOptions: {fileID: 0}
+  cameraManager: {fileID: 0}
+  throwController: {fileID: 0}
+  buttonsEvents: []
 --- !u!1 &98981303
 GameObject:
   m_ObjectHideFlags: 0
@@ -875,9 +867,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 78334104}
-        m_TargetAssemblyTypeName: CameraManager, Assembly-CSharp
-        m_MethodName: ChangeActiveCamera
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: ControlsStateController, Assembly-CSharp
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1230,7 +1222,6 @@ MonoBehaviour:
   grabbedObjectControlOptions: []
   canvasControlOptions: {fileID: 894828887}
   mainCamera: {fileID: 330585545}
-  controlsStateController: {fileID: 78334107}
 --- !u!114 &324010176
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2684,9 +2675,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 57001538}
-        m_TargetAssemblyTypeName: MoveOption, Assembly-CSharp
-        m_MethodName: ActivateMoveCursor
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: ControlsStateController, Assembly-CSharp
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -2817,9 +2808,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1952931738}
-        m_TargetAssemblyTypeName: ThrowOption, Assembly-CSharp
-        m_MethodName: ActivateThrowTrajectory
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: ControlsStateController, Assembly-CSharp
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3140,16 +3131,13 @@ PrefabInstance:
       addedObject: {fileID: 1952931735}
     - targetCorrespondingSourceObject: {fileID: 6565767563735424481, guid: 4ee24ec3c30f6be4fb750c695e91b66e, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1952931736}
-    - targetCorrespondingSourceObject: {fileID: 6565767563735424481, guid: 4ee24ec3c30f6be4fb750c695e91b66e, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1952931737}
-    - targetCorrespondingSourceObject: {fileID: 6565767563735424481, guid: 4ee24ec3c30f6be4fb750c695e91b66e, type: 3}
-      insertIndex: -1
       addedObject: {fileID: 1952931738}
     - targetCorrespondingSourceObject: {fileID: 6565767563735424481, guid: 4ee24ec3c30f6be4fb750c695e91b66e, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1952931739}
+    - targetCorrespondingSourceObject: {fileID: 6565767563735424481, guid: 4ee24ec3c30f6be4fb750c695e91b66e, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1952931741}
   m_SourcePrefab: {fileID: 100100000, guid: 4ee24ec3c30f6be4fb750c695e91b66e, type: 3}
 --- !u!1 &1391545338
 GameObject:
@@ -3978,7 +3966,6 @@ MonoBehaviour:
   - {fileID: 1100700120}
   canvasControlOptions: {fileID: 894828887}
   mainCamera: {fileID: 330585545}
-  controlsStateController: {fileID: 78334107}
 --- !u!114 &1952931735
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3994,37 +3981,6 @@ MonoBehaviour:
   agent: {fileID: 1952931732}
   animator: {fileID: 1952931730}
   distanceToGrabObject: 1
-  controlsStateController: {fileID: 78334107}
---- !u!114 &1952931736
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1952931728}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 97d7bb51f359c14438b19084535e4d5f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  controlsStateController: {fileID: 78334107}
-  objectGrabbedParent: {fileID: 1422381530}
-  character: {fileID: 1952931728}
---- !u!114 &1952931737
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1952931728}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e05083fc48b7ee54b9ee994a973de64f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objectGrabbedParent: {fileID: 1422381530}
-  controlsStateController: {fileID: 78334107}
-  interactableElementsParent: {fileID: 1647857254}
 --- !u!114 &1952931738
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4039,14 +3995,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   elementsToCopy:
   - {fileID: 447148081}
-  line: {fileID: 1952931739}
-  maxPhysicsFrameIterations: 100
+  lineRenderer: {fileID: 1952931739}
+  maxPhysicsFrameIterations: 200
   objectGrabbedParent: {fileID: 1422381530}
-  controlsStateController: {fileID: 78334107}
   throwForce: 10
   interactableElementsParent: {fileID: 1647857254}
-  character: {fileID: 1952931728}
-  lineRenderer: {fileID: 1952931739}
+  maxHeightThrow: 5
+  maxDistanceThrow: 5
 --- !u!120 &1952931739
 LineRenderer:
   serializedVersion: 2
@@ -4177,6 +4132,97 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 1, z: 0}
+--- !u!114 &1952931741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1952931728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45b3fc7d6aac1ff4f881c0a1d58aabf0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  moveCursor: {fileID: 57001537}
+  objectGrabbedParent: {fileID: 1422381531}
+  interactableElementsParent: {fileID: 1647857254}
+  displayDropObject: {fileID: 0}
+  characterController: {fileID: 1952931735}
+  controlOptions: {fileID: 1952931734}
+  cameraManager: {fileID: 78334104}
+  throwController: {fileID: 1952931738}
+  buttonsEvents:
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1952931741}
+        m_TargetAssemblyTypeName: ControlsStateController, Assembly-CSharp
+        m_MethodName: OnFollowButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1952931741}
+        m_TargetAssemblyTypeName: ControlsStateController, Assembly-CSharp
+        m_MethodName: OnMoveButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1952931741}
+        m_TargetAssemblyTypeName: ControlsStateController, Assembly-CSharp
+        m_MethodName: OnGrabButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1952931741}
+        m_TargetAssemblyTypeName: ControlsStateController, Assembly-CSharp
+        m_MethodName: OnDropButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1952931741}
+        m_TargetAssemblyTypeName: ControlsStateController, Assembly-CSharp
+        m_MethodName: OnThrowButtonClicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1982186725
 GameObject:
   m_ObjectHideFlags: 0
@@ -4260,9 +4306,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1952931736}
-        m_TargetAssemblyTypeName: GrabOption, Assembly-CSharp
-        m_MethodName: ActivateGrabControls
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: ControlsStateController, Assembly-CSharp
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4760,9 +4806,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1952931737}
-        m_TargetAssemblyTypeName: DropOption, Assembly-CSharp
-        m_MethodName: ActivateDropObject
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: ControlsStateController, Assembly-CSharp
+        m_MethodName: 
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

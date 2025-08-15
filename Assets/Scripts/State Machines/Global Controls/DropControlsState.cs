@@ -1,27 +1,57 @@
 using System;
 using UnityEngine;
 
-public class DropControlsState : IStateControls
+public class DropControlsState : StateControls
 {
-    public static event Action<RaycastHit, bool> clickToDropObjectEvent;
+    private Transform objectToDrop;
 
-    public void OnEntry(ControlsStateController controller)
+    private Vector3 dropPosition;
+
+    protected override void OnEntry()
     {
-
+        objectToDrop = controlsStateController.objectGrabbedParent.GetChild(0);
+        controlsStateController.InstatiateDropObject(objectToDrop);
+        MoveObjectOnMousePosition();
     }
 
-    public void OnUpdate(ControlsStateController controller)
+    protected override void OnUpdate()
     {
-
+        MoveObjectOnMousePosition();
     }
 
-    public void OnExit(ControlsStateController controller)
+    protected override void OnMouseClick(RaycastHit raycastHit)
     {
-
+        controlsStateController.characterController.MoveToPosition(raycastHit);
+        dropPosition = raycastHit.point;
+        CharacterController.destinationReached += DropObject;
     }
 
-    public void OnMouseClick(ControlsStateController controller, RaycastHit raycastHit)
+    private void DropObject()
     {
-        clickToDropObjectEvent?.Invoke(raycastHit, false);
+        if (objectToDrop != null)
+        {
+            objectToDrop.transform.position = dropPosition;
+            objectToDrop.transform.SetParent(controlsStateController.interactableElementsParent.transform);
+            objectToDrop = null;
+            controlsStateController.DestroyDisplayDropObject();
+            controlsStateController.controlOptions.ChangeStateGrabbedObjectOptions();
+            controlsStateController.ChangeState(controlsStateController.globalControlsState);
+        }
+    }
+
+    private void MoveObjectOnMousePosition()
+    {
+        //Display move cursor on ground where mouse is pointing
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            // Assuming the ground is tagged as "Ground"
+            if (hit.transform.CompareTag("Ground"))
+            {
+                // Set the position of the move cursor to the hit point
+                controlsStateController.displayDropObject.transform.position = hit.point;
+            }
+        }
     }
 }

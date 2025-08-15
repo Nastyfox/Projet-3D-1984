@@ -1,27 +1,17 @@
 using System;
 using UnityEngine;
 
-public class GlobalControlsState : IStateControls
+public class GlobalControlsState : StateControls
 {
-    public static event Action<RaycastHit> clickOnElementEvent;
-
-    public void OnEntry(ControlsStateController controller)
+    protected override void OnExit()
     {
-
+        controlsStateController.controlOptions.HideControlOptions();
     }
 
-    public void OnUpdate(ControlsStateController controller)
+    protected override void OnMouseClick(RaycastHit raycastHit)
     {
-
-    }
-
-    public void OnExit(ControlsStateController controller)
-    {
-
-    }
-
-    public void OnMouseClick(ControlsStateController controller, RaycastHit raycastHit)
-    {
-        clickOnElementEvent?.Invoke(raycastHit);
+        controlsStateController.controlOptions.SetListenersControlsButtons(controlsStateController.buttonsEvents);
+        controlsStateController.cameraManager.ChangeCameraFocus(raycastHit);
+        controlsStateController.controlOptions.DisplayControlOptions(raycastHit);
     }
 }

@@ -1,27 +1,34 @@
 using System;
 using UnityEngine;
 
-public class GrabControlState : IStateControls
+public class GrabControlState : StateControls
 {
-    public static event Action<RaycastHit, bool> clickToGrabEvent;
+    private Transform objectToGrab;
 
-    public void OnEntry(ControlsStateController controller)
+    protected override void OnExit()
     {
-
+        CharacterController.destinationReached -= GrabObject;
     }
 
-    public void OnUpdate(ControlsStateController controller)
+    protected override void OnMouseClick(RaycastHit raycastHit)
     {
+        controlsStateController.characterController.MoveToObject(raycastHit);
+        CharacterController.destinationReached += GrabObject;
 
+        objectToGrab = raycastHit.transform;
     }
 
-    public void OnExit(ControlsStateController controller)
+    private void GrabObject()
     {
+        if (objectToGrab.tag == "InteractableElement")
+        {
+            objectToGrab.SetParent(controlsStateController.objectGrabbedParent);
+            objectToGrab.transform.localPosition = Vector3.zero;
+            objectToGrab.transform.localRotation = Quaternion.identity;
+            objectToGrab.GetComponent<Rigidbody>().isKinematic = true;
+            controlsStateController.controlOptions.ChangeStateGrabbedObjectOptions();
+        }
 
-    }
-
-    public void OnMouseClick(ControlsStateController controller, RaycastHit raycastHit)
-    {
-        clickToGrabEvent?.Invoke(raycastHit, true);
+        controlsStateController.ChangeState(controlsStateController.globalControlsState);
     }
 }
