@@ -2,40 +2,32 @@ using UnityEngine;
 using UnityEngine.AI;
 
 [System.Serializable]
-public class ChaseState : IStateNPC
+public class ChaseState : StateNPC
 {
-    [SerializeField] NavMeshAgent agent;
-    [SerializeField] private Animator animator;
+    private Transform target;
 
-    private Transform myTransform;
-    [HideInInspector] private Transform target;
+    [SerializeField] private float chaseSpeed;
 
-    [SerializeField] private float loseDistance;
-
-    public void OnEntry(NPCStateController controller)
+    protected override void OnEntry()
     {
-        Debug.Log("Chase State: Entering chase state");
-        agent.speed *= 2f; // Increase speed for chase
+        agent.speed = chaseSpeed;
         animator.speed = agent.speed / 8f;
-        myTransform = controller.transform;
-        agent.SetDestination(target.position);
+        if (target != null)
+        {
+            agent.SetDestination(target.position);
+        }
     }
 
-    public void OnUpdate(NPCStateController controller)
+    protected override void OnUpdate()
     {
-        if (!controller.patrolState.LookForCharacter())
+        if (!npcStateController.patrolState.FindVisibleTargets())
         {
-            controller.ChangeState(controller.patrolState);
+            npcStateController.ChangeState(npcStateController.patrolState);
         }
         else
         {
             Chase();
         }
-    }
-
-    public void OnExit(NPCStateController controller)
-    {
-        Debug.Log("Chase State: Exiting chase state");
     }
 
     public void SetTarget(Transform targetTransform)
@@ -46,20 +38,5 @@ public class ChaseState : IStateNPC
     void Chase()
     {
         agent.SetDestination(target.position);
-    }
-
-    bool PlayerLost()
-    {
-        if (!target)
-        {
-            return true;
-        }
-
-        if (Vector3.Distance(myTransform.position, target.position) > loseDistance)
-        {
-            return true;
-        }
-
-        return false;
     }
 }

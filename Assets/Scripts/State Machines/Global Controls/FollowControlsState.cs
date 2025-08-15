@@ -1,11 +1,13 @@
 using System;
 using UnityEngine;
 
+[Serializable]
+
 public class FollowControlsState : StateControls
 {
     protected override void OnEntry()
     {
-        controlsStateController.cameraManager.ChangeActiveCamera();
+        cameraManager.ChangeActiveCamera();
     }
 
     protected override void OnMouseClick(RaycastHit raycastHit)

@@ -15,22 +15,18 @@ public class ControlsStateController : MonoBehaviour
     public DropControlsState dropControlsState = new DropControlsState();
     public ThrowControlsState throwControlsState = new ThrowControlsState();
     public DisplayControlsState displayControlsState = new DisplayControlsState();
-
-    public GameObject moveCursor;
-    public Transform objectGrabbedParent;
-    public Transform interactableElementsParent;
+    
     public GameObject displayDropObject;
-    public CharacterController characterController;
-    public ControlOptions controlOptions;
-    public CameraManager cameraManager;
-    public ThrowController throwController;
+    public Transform interactableElementsParent;
 
-    public List<UnityEvent> buttonsEvents;
+    [SerializeField] private CameraManager cameraManager;
+    [SerializeField] private ControlOptions controlOptions;
+    [SerializeField] private CharacterController characterController;
+    [SerializeField] private Transform objectGrabbedParent;
 
     void Start()
     {
         ChangeState(globalControlsState);
-        characterController = this.gameObject.GetComponent<CharacterController>();
     }
 
     public void ChangeState(StateControls newState)
@@ -41,7 +37,7 @@ public class ControlsStateController : MonoBehaviour
         }
 
         currentState = newState;
-        currentState.OnStateEnter(this);
+        currentState.OnStateEnter(this, cameraManager, controlOptions, characterController, objectGrabbedParent);
     }
     public void OnMouseClick(RaycastHit raycastHit)
     {

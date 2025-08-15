@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class NPCStateController : MonoBehaviour
 {
-    public IStateNPC currentState;
+    public StateNPC currentState;
 
     public IdleState idleState = new IdleState();
     public PatrolState patrolState = new PatrolState();
@@ -13,19 +13,24 @@ public class NPCStateController : MonoBehaviour
         ChangeState(patrolState);
     }
 
-    public void ChangeState(IStateNPC newState)
+    public void ChangeState(StateNPC newState)
     {
         if (currentState != null)
         {
-            currentState.OnExit(this);
+            currentState.OnStateExit();
         }
 
         currentState = newState;
-        currentState.OnEntry(this);
+        currentState.OnStateEnter(this);
     }
 
     void Update()
     {
-        currentState.OnUpdate(this);
+        currentState.OnStateUpdate();
+    }
+
+    void LateUpdate()
+    {
+        currentState.OnStateLateUpdate();
     }
 }

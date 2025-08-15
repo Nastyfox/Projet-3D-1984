@@ -1,26 +1,30 @@
 using System;
 using UnityEngine;
 
+[Serializable]
 public class ThrowControlsState : StateControls
 {
     private Vector3 mousePosition;
 
+    [SerializeField] private ThrowController throwController;
+
+
     protected override void OnEntry()
     {
-        controlsStateController.throwController.ActivateThrowTrajectory();
+        throwController.ActivateThrowTrajectory();
     }
 
     protected override void OnUpdate()
     {
-        mousePosition = controlsStateController.throwController.GetMousePosition();
-        controlsStateController.throwController.SimulateTrajectory();
-        controlsStateController.characterController.FollowMoveCursor(mousePosition);
+        mousePosition = throwController.GetMousePosition();
+        throwController.SimulateTrajectory();
+        characterController.FollowMoveCursor(mousePosition);
     }
 
     protected override void OnMouseClick(RaycastHit raycast)
     {
-        controlsStateController.throwController.LaunchObject();
-        controlsStateController.controlOptions.ChangeStateGrabbedObjectOptions();
+        throwController.LaunchObject();
+        controlOptions.ChangeStateGrabbedObjectOptions();
         controlsStateController.ChangeState(controlsStateController.globalControlsState);
     }
 }

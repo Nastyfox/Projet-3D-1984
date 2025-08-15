@@ -1,17 +1,22 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 
+[Serializable]
 public class GlobalControlsState : StateControls
 {
+    [SerializeField] private List<UnityEvent> buttonsEvents;
+
     protected override void OnExit()
     {
-        controlsStateController.controlOptions.HideControlOptions();
+        controlOptions.HideControlOptions();
     }
 
     protected override void OnMouseClick(RaycastHit raycastHit)
     {
-        controlsStateController.controlOptions.SetListenersControlsButtons(controlsStateController.buttonsEvents);
-        controlsStateController.cameraManager.ChangeCameraFocus(raycastHit);
-        controlsStateController.controlOptions.DisplayControlOptions(raycastHit);
+        controlOptions.SetListenersControlsButtons(buttonsEvents);
+        cameraManager.ChangeCameraFocus(raycastHit);
+        controlOptions.DisplayControlOptions(raycastHit);
     }
 }

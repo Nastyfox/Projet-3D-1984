@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 
+[Serializable]
 public class DisplayControlsState : StateControls
 {
     public static event Action<RaycastHit, bool> clickToCloseControls;

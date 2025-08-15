@@ -15,8 +15,8 @@ TagManager:
   - NPC
   - Water
   - UI
-  - 
-  - 
+  - ControllableCharacter
+  - Obstacle
   - 
   - 
   - 

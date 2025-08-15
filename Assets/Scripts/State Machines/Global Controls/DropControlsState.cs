@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 
+[Serializable]
+
 public class DropControlsState : StateControls
 {
     private Transform objectToDrop;
@@ -9,7 +11,7 @@ public class DropControlsState : StateControls
 
     protected override void OnEntry()
     {
-        objectToDrop = controlsStateController.objectGrabbedParent.GetChild(0);
+        objectToDrop = objectGrabbedParent.GetChild(0);
         controlsStateController.InstatiateDropObject(objectToDrop);
         MoveObjectOnMousePosition();
     }
@@ -21,7 +23,7 @@ public class DropControlsState : StateControls
 
     protected override void OnMouseClick(RaycastHit raycastHit)
     {
-        controlsStateController.characterController.MoveToPosition(raycastHit);
+        characterController.MoveToPosition(raycastHit);
         dropPosition = raycastHit.point;
         CharacterController.destinationReached += DropObject;
     }
@@ -34,7 +36,7 @@ public class DropControlsState : StateControls
             objectToDrop.transform.SetParent(controlsStateController.interactableElementsParent.transform);
             objectToDrop = null;
             controlsStateController.DestroyDisplayDropObject();
-            controlsStateController.controlOptions.ChangeStateGrabbedObjectOptions();
+            controlOptions.ChangeStateGrabbedObjectOptions();
             controlsStateController.ChangeState(controlsStateController.globalControlsState);
         }
     }

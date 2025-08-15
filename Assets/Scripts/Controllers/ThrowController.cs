@@ -21,8 +21,6 @@ public class ThrowController : MonoBehaviour
     private GameObject displayThrowObject;
     private MeshRenderer objectToThrowRenderer;
 
-    [SerializeField] private float throwForce;
-
     [SerializeField] private Transform interactableElementsParent;
 
     private Dictionary<Transform, Transform> spawnedObjects = new Dictionary<Transform, Transform>();
@@ -40,6 +38,7 @@ public class ThrowController : MonoBehaviour
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
+        lineRenderer.material.SetFloat("_TilingAmount", maxPhysicsFrameIterations / 2f);
         gravity = Physics.gravity.y;
         CreatePhysicsScene();
     }
@@ -56,8 +55,16 @@ public class ThrowController : MonoBehaviour
 
     void CreatePhysicsScene()
     {
-        simulationScene = SceneManager.CreateScene("SimulationScene", new CreateSceneParameters(LocalPhysicsMode.Physics3D));
-        physicsScene = simulationScene.GetPhysicsScene();
+        if (SceneManager.GetSceneByName("SimulationScene").IsValid())
+        {
+            simulationScene = SceneManager.GetSceneByName("SimulationScene");
+            physicsScene = simulationScene.GetPhysicsScene();
+        }
+        else
+        {
+            simulationScene = SceneManager.CreateScene("SimulationScene", new CreateSceneParameters(LocalPhysicsMode.Physics3D));
+            physicsScene = simulationScene.GetPhysicsScene();
+        }
 
         foreach (Transform element in elementsToCopy)
         {

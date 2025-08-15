@@ -1,6 +1,8 @@
 using System;
 using UnityEngine;
 
+[Serializable]
+
 public class GrabControlState : StateControls
 {
     private Transform objectToGrab;
@@ -12,7 +14,7 @@ public class GrabControlState : StateControls
 
     protected override void OnMouseClick(RaycastHit raycastHit)
     {
-        controlsStateController.characterController.MoveToObject(raycastHit);
+        characterController.MoveToObject(raycastHit);
         CharacterController.destinationReached += GrabObject;
 
         objectToGrab = raycastHit.transform;
@@ -22,11 +24,11 @@ public class GrabControlState : StateControls
     {
         if (objectToGrab.tag == "InteractableElement")
         {
-            objectToGrab.SetParent(controlsStateController.objectGrabbedParent);
+            objectToGrab.SetParent(objectGrabbedParent);
             objectToGrab.transform.localPosition = Vector3.zero;
             objectToGrab.transform.localRotation = Quaternion.identity;
             objectToGrab.GetComponent<Rigidbody>().isKinematic = true;
-            controlsStateController.controlOptions.ChangeStateGrabbedObjectOptions();
+            controlOptions.ChangeStateGrabbedObjectOptions();
         }
 
         controlsStateController.ChangeState(controlsStateController.globalControlsState);

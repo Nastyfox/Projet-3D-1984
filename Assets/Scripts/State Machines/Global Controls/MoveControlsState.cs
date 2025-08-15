@@ -1,13 +1,17 @@
 using System;
 using UnityEngine;
 
+[Serializable]
+
 public class MoveControlsState : StateControls
 {
     private MeshRenderer moveCursorRenderer;
 
+    [SerializeField] private GameObject moveCursor;
+
     protected override void OnEntry()
     {
-        moveCursorRenderer = controlsStateController.moveCursor.GetComponent<MeshRenderer>();
+        moveCursorRenderer = moveCursor.GetComponent<MeshRenderer>();
         moveCursorRenderer.enabled = true;
     }
 
@@ -24,7 +28,7 @@ public class MoveControlsState : StateControls
     protected override void OnMouseClick(RaycastHit raycastHit)
     {
         CharacterController.destinationReached += EndMovement;
-        controlsStateController.characterController.MoveToPosition(raycastHit);
+        characterController.MoveToPosition(raycastHit);
         moveCursorRenderer.enabled = false;
     }
 
@@ -39,7 +43,7 @@ public class MoveControlsState : StateControls
             if (hit.transform.CompareTag("Ground"))
             {
                 // Set the position of the move cursor to the hit point
-                controlsStateController.moveCursor.transform.position = hit.point;
+                moveCursor.transform.position = hit.point;
             }
         }
     }

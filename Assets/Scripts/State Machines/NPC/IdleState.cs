@@ -1,19 +1,10 @@
-using UnityEngine;
+using System;
 
-public class IdleState : IStateNPC
+[Serializable]
+public class IdleState : StateNPC
 {
-    public void OnEntry(NPCStateController controller)
+    protected override void OnEntry()
     {
-
-    }
-
-    public void OnUpdate(NPCStateController controller)
-    {
-
-    }
-
-    public void OnExit(NPCStateController controller)
-    {
-
+        agent.ResetPath();
     }
 }

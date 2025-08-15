@@ -3,11 +3,18 @@ using UnityEngine;
 public abstract class StateControls
 {
     protected ControlsStateController controlsStateController;
-    [SerializeField] private string test;
+    protected CameraManager cameraManager;
+    protected ControlOptions controlOptions;
+    protected CharacterController characterController;
+    protected Transform objectGrabbedParent;
 
-    public void OnStateEnter(ControlsStateController controller)
+    public void OnStateEnter(ControlsStateController controller, CameraManager camManager, ControlOptions ctrlOptions, CharacterController charaController, Transform objGrabParent)
     {
         controlsStateController = controller;
+        cameraManager = camManager;
+        controlOptions = ctrlOptions;
+        characterController = charaController;
+        objectGrabbedParent = objGrabParent;
         OnEntry();
     }
 
