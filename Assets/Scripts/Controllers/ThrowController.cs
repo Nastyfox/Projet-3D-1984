@@ -158,10 +158,13 @@ public class ThrowController : MonoBehaviour
         lineRenderer.enabled = false;
         objectToThrowRenderer.enabled = false;
 
+        objectGrabbed.transform.position = positionBeforeThrow;
+        objectGrabbed.transform.rotation = rotationBeforeThrow;
+
+        objectGrabbed.transform.SetParent(interactableElementsParent);
         objectGrabbedRb.isKinematic = false;
         objectGrabbedRb.linearVelocity = CalculateLaunchVelocity();
 
-        objectGrabbed.transform.SetParent(interactableElementsParent);
         objectGrabbed = null;
         Destroy(displayThrowObject);
         Destroy(ghostObject);
