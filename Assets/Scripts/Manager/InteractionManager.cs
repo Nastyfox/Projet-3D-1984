@@ -1,12 +1,9 @@
-using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-[RequireComponent(typeof(ControlsStateController))]
 public class InteractionManager : MonoBehaviour
 {
     [SerializeField] private GraphicRaycaster graphicRaycaster;
@@ -15,7 +12,8 @@ public class InteractionManager : MonoBehaviour
     [Header("Camera parameters")]
     [SerializeField] private Camera mainCamera;
 
-    private ControlsStateController currentControlsStateController;
+    private ControllerStateControls currentControlsStateController;
+    [SerializeField] CameraManager cameraManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -29,18 +27,21 @@ public class InteractionManager : MonoBehaviour
         
     }
 
+    public void ResetControlsStateController()
+    {
+        currentControlsStateController = null;
+    }
+
     public void OnMouseClick(InputAction.CallbackContext context)
     {
         if (!context.canceled)
             return;
 
-        // Check if there are any UI elements underneath the current mouse position
         PointerEventData pointerEventData = new PointerEventData(eventSystem);
         pointerEventData.position = Input.mousePosition;
         List<RaycastResult> results = new List<RaycastResult>();
         graphicRaycaster.Raycast(pointerEventData, results);
 
-        // "results" stores a list of all the objects hit by the graphic raycast. If the number of results is zero, you know you're in the clear and there are no UI elements underneath the mouse.
         if (results.Count == 0)
         {
             RaycastHit raycastHit;
@@ -51,17 +52,53 @@ public class InteractionManager : MonoBehaviour
             {
                 if (raycastHit.transform != null)
                 {
-                    if (raycastHit.collider.gameObject.GetComponent<ControlsStateController>())
-                    {
-                        currentControlsStateController = raycastHit.collider.gameObject.GetComponent<ControlsStateController>();
-                    }
-
                     if (currentControlsStateController != null)
                     {
+                        currentControlsStateController.OnMouseClick(raycastHit);
+                        return;
+                    }
+
+                    else if (raycastHit.collider.gameObject.GetComponent<ControllerStateControls>())
+                    {
+                        currentControlsStateController = raycastHit.collider.gameObject.GetComponent<ControllerStateControls>();
                         currentControlsStateController.OnMouseClick(raycastHit);
                     }
                 }
             }
+        }
+    }
+
+    public void OnScroll(InputAction.CallbackContext context)
+    {
+        if (currentControlsStateController != null)
+        {
+            currentControlsStateController.OnScroll(context.ReadValue<float>());
+        }
+
+        else
+        {
+            cameraManager.OnZoom(context.ReadValue<float>());
+        }
+    }
+
+    public void OnMouseMoveMiddleButtonPressed(InputAction.CallbackContext context)
+    {
+        if (currentControlsStateController != null)
+        {
+            currentControlsStateController.OnMouseMoveMiddleButtonPressed(context.ReadValue<Vector2>().x);
+        }
+
+        else
+        {
+            cameraManager.OnRotate(context.ReadValue<Vector2>().x);
+        }
+    }
+
+    public void OnScrollControlPressed(InputAction.CallbackContext context)
+    {
+        if (currentControlsStateController != null)
+        {
+            currentControlsStateController.OnScrollControlPressed(context.ReadValue<float>());
         }
     }
 }

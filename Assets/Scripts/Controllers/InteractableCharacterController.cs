@@ -4,7 +4,7 @@ using UnityEngine.AI;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(ControlOptions))]
-public class CharacterController : MonoBehaviour
+public class InteractableCharacterController : MonoBehaviour
 {
     [SerializeField] NavMeshAgent agent;
     [SerializeField] private Animator animator;

@@ -2,7 +2,7 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class ThrowControlsState : StateControls
+public class ThrowControlsState : CharacterStateControls
 {
     private Vector3 mousePosition;
 
@@ -16,7 +16,7 @@ public class ThrowControlsState : StateControls
 
     protected override void OnUpdate()
     {
-        mousePosition = throwController.GetMousePosition();
+        mousePosition = throwController.GetMousePosition(mainCamera);
         throwController.SimulateTrajectory();
         characterController.FollowMoveCursor(mousePosition);
     }
@@ -26,5 +26,15 @@ public class ThrowControlsState : StateControls
         throwController.LaunchObject();
         controlOptions.ChangeStateGrabbedObjectOptions();
         controlsStateController.ChangeState(controlsStateController.globalControlsState);
+    }
+
+    protected override void OnScroll(float scrollValue)
+    {
+        
+    }
+
+    protected override void OnScrollControlPressed(float scrollValue)
+    {
+        throwController.ChangeThrowHeight(scrollValue);
     }
 }

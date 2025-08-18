@@ -3,7 +3,7 @@ using UnityEngine;
 
 [Serializable]
 
-public class FollowControlsState : StateControls
+public class FollowControlsState : CharacterStateControls
 {
     protected override void OnEntry()
     {
@@ -12,7 +12,18 @@ public class FollowControlsState : StateControls
 
     protected override void OnMouseClick(RaycastHit raycastHit)
     {
+        cameraManager.ChangeCameraFocus(raycastHit);
+        cameraManager.ChangeActiveCamera();
         controlsStateController.ChangeState(controlsStateController.globalControlsState);
+    }
 
+    protected override void OnScroll(float scrollValue)
+    {
+        // No specific action for scroll in follow state
+    }
+
+    protected override void OnMouseMoveMiddleButtonPressed(float axisValue)
+    {
+        // No specific action for middle mouse button in follow state
     }
 }

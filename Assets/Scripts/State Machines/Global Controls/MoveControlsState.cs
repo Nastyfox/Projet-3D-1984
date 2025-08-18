@@ -3,7 +3,7 @@ using UnityEngine;
 
 [Serializable]
 
-public class MoveControlsState : StateControls
+public class MoveControlsState : CharacterStateControls
 {
     private MeshRenderer moveCursorRenderer;
 
@@ -22,12 +22,12 @@ public class MoveControlsState : StateControls
 
     protected override void OnExit()
     {
-        CharacterController.destinationReached -= EndMovement;
+        InteractableCharacterController.destinationReached -= EndMovement;
     }
 
     protected override void OnMouseClick(RaycastHit raycastHit)
     {
-        CharacterController.destinationReached += EndMovement;
+        InteractableCharacterController.destinationReached += EndMovement;
         characterController.MoveToPosition(raycastHit);
         moveCursorRenderer.enabled = false;
     }
@@ -35,7 +35,7 @@ public class MoveControlsState : StateControls
     private void MoveCursorOnMousePosition()
     {
         //Display move cursor on ground where mouse is pointing
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
         RaycastHit hit;
         if (Physics.Raycast(ray, out hit))
         {

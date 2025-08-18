@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class ControlsStateController : MonoBehaviour
+public class CharacterControlsStateController : ControllerStateControls
 {
-    public StateControls currentState;
+    public CharacterStateControls currentState;
 
     public GlobalControlsState globalControlsState = new GlobalControlsState();
     public MoveControlsState moveControlsState = new MoveControlsState();
@@ -21,15 +21,16 @@ public class ControlsStateController : MonoBehaviour
 
     [SerializeField] private CameraManager cameraManager;
     [SerializeField] private ControlOptions controlOptions;
-    [SerializeField] private CharacterController characterController;
+    [SerializeField] private InteractableCharacterController characterController;
     [SerializeField] private Transform objectGrabbedParent;
+    [SerializeField] private Camera mainCamera;
 
     void Start()
     {
         ChangeState(globalControlsState);
     }
 
-    public void ChangeState(StateControls newState)
+    public void ChangeState(CharacterStateControls newState)
     {
         if (currentState != null)
         {
@@ -37,11 +38,26 @@ public class ControlsStateController : MonoBehaviour
         }
 
         currentState = newState;
-        currentState.OnStateEnter(this, cameraManager, controlOptions, characterController, objectGrabbedParent);
+        currentState.OnStateEnter(this, cameraManager, controlOptions, characterController, objectGrabbedParent, mainCamera);
     }
-    public void OnMouseClick(RaycastHit raycastHit)
+    public override void OnMouseClick(RaycastHit raycastHit)
     {
         currentState.OnStateMouseClick(raycastHit);
+    }
+
+    public override void OnScroll(float scrollValue)
+    {
+        currentState.OnStateScroll(scrollValue);
+    }
+
+    public override void OnMouseMoveMiddleButtonPressed(float axisValue)
+    {
+        currentState.OnStateMouseMoveMiddleButtonPressed(axisValue);
+    }
+
+    public override void OnScrollControlPressed(float scrollValue)
+    {
+        currentState.OnStateScrollControlPressed(scrollValue);
     }
 
     void Update()

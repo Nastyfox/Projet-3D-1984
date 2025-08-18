@@ -3,7 +3,7 @@ using UnityEngine;
 
 [Serializable]
 
-public class DropControlsState : StateControls
+public class DropControlsState : CharacterStateControls
 {
     private Transform objectToDrop;
 
@@ -25,7 +25,7 @@ public class DropControlsState : StateControls
     {
         characterController.MoveToPosition(raycastHit);
         dropPosition = raycastHit.point;
-        CharacterController.destinationReached += DropObject;
+        InteractableCharacterController.destinationReached += DropObject;
     }
 
     private void DropObject()
@@ -44,15 +44,15 @@ public class DropControlsState : StateControls
     private void MoveObjectOnMousePosition()
     {
         //Display move cursor on ground where mouse is pointing
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit raycastHit;
+        if (Physics.Raycast(ray, out raycastHit))
         {
             // Assuming the ground is tagged as "Ground"
-            if (hit.transform.CompareTag("Ground"))
+            if (raycastHit.transform.CompareTag("Ground"))
             {
                 // Set the position of the move cursor to the hit point
-                controlsStateController.displayDropObject.transform.position = hit.point;
+                controlsStateController.displayDropObject.transform.position = raycastHit.point;
             }
         }
     }

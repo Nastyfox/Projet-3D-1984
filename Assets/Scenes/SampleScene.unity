@@ -690,7 +690,6 @@ GameObject:
   - component: {fileID: 78334105}
   - component: {fileID: 78334102}
   - component: {fileID: 78334104}
-  - component: {fileID: 78334107}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -713,6 +712,7 @@ MonoBehaviour:
   graphicRaycaster: {fileID: 894828885}
   eventSystem: {fileID: 28876423}
   mainCamera: {fileID: 330585545}
+  cameraManager: {fileID: 78334104}
 --- !u!4 &78334103
 Transform:
   m_ObjectHideFlags: 0
@@ -750,6 +750,7 @@ MonoBehaviour:
   targetLookAt: {fileID: 1198851986}
   targetFollow: {fileID: 1831476551}
   rotateSpeed: 100
+  interactionManager: {fileID: 78334102}
 --- !u!114 &78334105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -777,9 +778,9 @@ MonoBehaviour:
   m_ActionEvents:
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 78334104}
-        m_TargetAssemblyTypeName: CameraManager, Assembly-CSharp
-        m_MethodName: OnRotate
+      - m_Target: {fileID: 78334102}
+        m_TargetAssemblyTypeName: InteractionManager, Assembly-CSharp
+        m_MethodName: OnMouseMoveMiddleButtonPressed
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -793,9 +794,9 @@ MonoBehaviour:
     m_ActionName: 'Player/Rotate[/Mouse/middleButton,/Mouse/delta,/Touchscreen/delta,/Pen/delta]'
   - m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 78334104}
-        m_TargetAssemblyTypeName: CameraManager, Assembly-CSharp
-        m_MethodName: OnZoom
+      - m_Target: {fileID: 78334102}
+        m_TargetAssemblyTypeName: InteractionManager, Assembly-CSharp
+        m_MethodName: OnScroll
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -823,35 +824,27 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 2919a56c-5018-49c3-b99b-814cab2a6f9a
     m_ActionName: 'Player/Click[/Mouse/leftButton]'
+  - m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 78334102}
+        m_TargetAssemblyTypeName: InteractionManager, Assembly-CSharp
+        m_MethodName: OnScrollControlPressed
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+    m_ActionId: e7793720-10ca-4800-8128-8b96e5c41bb5
+    m_ActionName: 'Controls/ScrollControlPressed[/Keyboard/ctrl,/Mouse/scroll/y]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Controls
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
---- !u!114 &78334107
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 78334101}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 45b3fc7d6aac1ff4f881c0a1d58aabf0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  globalControlsState:
-    buttonsEvents: []
-  moveControlsState:
-    moveCursor: {fileID: 0}
-  throwControlsState:
-    throwController: {fileID: 0}
-  displayDropObject: {fileID: 0}
-  interactableElementsParent: {fileID: 0}
-  cameraManager: {fileID: 0}
-  controlOptions: {fileID: 0}
-  characterController: {fileID: 0}
-  objectGrabbedParent: {fileID: 0}
 --- !u!1 &98981303
 GameObject:
   m_ObjectHideFlags: 0
@@ -5203,7 +5196,7 @@ NavMeshAgent:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1952931728}
-  m_Enabled: 0
+  m_Enabled: 1
   m_AgentTypeID: 0
   m_Radius: 1
   m_Speed: 8
@@ -5273,6 +5266,8 @@ MonoBehaviour:
   interactableElementsParent: {fileID: 1647857254}
   maxHeightThrow: 3
   maxDistanceThrow: 5
+  minDistanceThrow: 1
+  heightToDistanceRatio: 10
 --- !u!120 &1952931739
 LineRenderer:
   serializedVersion: 2
@@ -5497,6 +5492,7 @@ MonoBehaviour:
   controlOptions: {fileID: 1952931734}
   characterController: {fileID: 1952931735}
   objectGrabbedParent: {fileID: 1422381531}
+  mainCamera: {fileID: 330585545}
 --- !u!1 &1982186725
 GameObject:
   m_ObjectHideFlags: 0

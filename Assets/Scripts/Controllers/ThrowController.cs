@@ -32,15 +32,24 @@ public class ThrowController : MonoBehaviour
     private float gravity;
 
     [SerializeField] private float maxHeightThrow;
-
+    private float minHeightThrow;
     [SerializeField] private float maxDistanceThrow;
+    [SerializeField] private float minDistanceThrow;
+    [SerializeField] private float heightToDistanceRatio;
+    private float throwDistance;
+    private float throwHeight;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         lineRenderer.material.SetFloat("_TilingAmount", maxPhysicsFrameIterations / 2f);
+
         gravity = Physics.gravity.y;
         CreatePhysicsScene();
+
+        throwHeight = minHeightThrow;
+        throwDistance = heightToDistanceRatio / throwHeight;
+        throwDistance = Mathf.Clamp(throwDistance, minDistanceThrow, maxDistanceThrow);
     }
 
     // Update is called once per frame
@@ -90,6 +99,8 @@ public class ThrowController : MonoBehaviour
         positionBeforeThrow = objectGrabbed.transform.position;
         rotationBeforeThrow = objectGrabbed.transform.rotation;
 
+        minHeightThrow = positionBeforeThrow.y + 0.1f;
+
         lineRenderer.enabled = true;
         objectToThrowRenderer.enabled = true;
     }
@@ -117,22 +128,27 @@ public class ThrowController : MonoBehaviour
     private GameObject InstantiateGhostObject(GameObject objectToThrow, Vector3 pos, Quaternion rotation)
     {
         var ghostObj = Instantiate(objectToThrow, pos, rotation);
-        if(ghostObj.GetComponent<Renderer>())
+
+        foreach(Transform child in ghostObj.transform)
         {
-            ghostObj.GetComponent<Renderer>().enabled = false;
+            if (child.GetComponent<Renderer>())
+            {
+                child.GetComponent<Renderer>().enabled = false;
+            }
         }
+
         SceneManager.MoveGameObjectToScene(ghostObj, simulationScene);
         
         return ghostObj;
     }
 
-    public Vector3 GetMousePosition()
+    public Vector3 GetMousePosition(Camera mainCamera)
     {
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+        Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+        RaycastHit raycastHit;
+        if (Physics.Raycast(ray, out raycastHit))
         {
-            mousePosition = hit.point;
+            mousePosition = raycastHit.point;
         }
 
         return mousePosition;
@@ -141,13 +157,14 @@ public class ThrowController : MonoBehaviour
     private Vector3 CalculateLaunchVelocity()
     {
         float displacementY = mousePosition.y - positionBeforeThrow.y;
+        displacementY = Mathf.Min(displacementY, maxHeightThrow);
 
-        float displacementX = Mathf.Clamp(mousePosition.x - positionBeforeThrow.x, -maxDistanceThrow, maxDistanceThrow);
-        float displacementZ = Mathf.Clamp(mousePosition.z - positionBeforeThrow.z, -maxDistanceThrow, maxDistanceThrow);
+        float displacementX = Mathf.Clamp(mousePosition.x - positionBeforeThrow.x, -throwDistance, throwDistance);
+        float displacementZ = Mathf.Clamp(mousePosition.z - positionBeforeThrow.z, -throwDistance, throwDistance);
         Vector3 displacementXZ = new Vector3(displacementX, 0, displacementZ);
 
-        float time = Mathf.Sqrt(-2 * maxHeightThrow / gravity) + Mathf.Sqrt(2 * (displacementY - maxHeightThrow) / gravity);
-        Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * maxHeightThrow);
+        float time = Mathf.Sqrt(-2 * throwHeight / gravity) + Mathf.Sqrt(2 * (displacementY - throwHeight) / gravity);
+        Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * throwHeight);
         Vector3 velocityXZ = displacementXZ / time;
 
         return velocityXZ + velocityY;
@@ -168,5 +185,12 @@ public class ThrowController : MonoBehaviour
         objectGrabbed = null;
         Destroy(displayThrowObject);
         Destroy(ghostObject);
+    }
+
+    public void ChangeThrowHeight(float scrollValue)
+    {
+        throwHeight = Mathf.Clamp(throwHeight + scrollValue, minHeightThrow, maxHeightThrow);
+        throwDistance = heightToDistanceRatio / throwHeight;
+        throwDistance = Mathf.Clamp(throwDistance, minDistanceThrow, maxDistanceThrow);
     }
 }

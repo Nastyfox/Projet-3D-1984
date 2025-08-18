@@ -34,7 +34,8 @@ public class CameraManager : MonoBehaviour
     private GameObject target;
     [Range(20f, 200f)]
     [SerializeField] private float rotateSpeed;
-    private float rotateXAxis;
+
+    [SerializeField] private InteractionManager interactionManager;
 
     private void Awake()
     {
@@ -58,11 +59,9 @@ public class CameraManager : MonoBehaviour
             
     }
 
-    public void OnZoom(InputAction.CallbackContext context)
+    public void OnZoom(float zoomScale)
     {
         Vector3 zoomDirection = followOffset.normalized;
-
-        zoomScale = context.ReadValue<float>();
 
         followOffset -= zoomDirection * Mathf.Sign(zoomScale);
 
@@ -77,10 +76,8 @@ public class CameraManager : MonoBehaviour
         cinemachineFollow.m_FollowOffset = Vector3.Lerp(cinemachineFollow.m_FollowOffset, followOffset, zoomSpeed * Time.deltaTime);
     }
 
-    public void OnRotate(InputAction.CallbackContext context)
+    public void OnRotate(float rotateXAxis)
     {
-        rotateXAxis = context.ReadValue<Vector2>().x;
-
         targetFollow.transform.RotateAround(targetLookAt.transform.position, Vector3.up * Mathf.Sign(rotateXAxis), rotateSpeed * Time.deltaTime);
     }
 
@@ -100,6 +97,7 @@ public class CameraManager : MonoBehaviour
                 targetLookAt.transform.position = raycastHit.point;
                 targetLookAt.transform.SetParent(target.transform);
                 targetFollow.transform.SetParent(target.transform);
+                interactionManager.ResetControlsStateController();
             }
 
             StartCoroutine(CameraTransitionCoroutine(targetLookAt.transform.localPosition));

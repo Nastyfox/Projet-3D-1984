@@ -3,19 +3,19 @@ using UnityEngine;
 
 [Serializable]
 
-public class GrabControlState : StateControls
+public class GrabControlState : CharacterStateControls
 {
     private Transform objectToGrab;
 
     protected override void OnExit()
     {
-        CharacterController.destinationReached -= GrabObject;
+        InteractableCharacterController.destinationReached -= GrabObject;
     }
 
     protected override void OnMouseClick(RaycastHit raycastHit)
     {
         characterController.MoveToObject(raycastHit);
-        CharacterController.destinationReached += GrabObject;
+        InteractableCharacterController.destinationReached += GrabObject;
 
         objectToGrab = raycastHit.transform;
     }
