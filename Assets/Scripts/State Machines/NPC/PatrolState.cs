@@ -26,6 +26,7 @@ public class PatrolState : StateNPC
     private Transform targetDetected;
 
     [SerializeField] private FieldOfView3D fieldOfView3D;
+    [SerializeField] private FieldOfView3DV2 fieldOfView3DV2;
     [SerializeField] private FieldOfView2D fieldOfView2D;
 
     protected override void OnEntry()
@@ -33,14 +34,19 @@ public class PatrolState : StateNPC
         agent.speed = patrolSpeed;
         animator.speed = agent.speed / 8f;
         nextPosition = movementPositions[1];
-        //agent.SetDestination(nextPosition);
+        agent.SetDestination(nextPosition);
 
         if(fieldOfView3D.enabled)
         {
             fieldOfView3D.SetViewParameters(viewGameObject, maxHorizontalAngleDetection, maxVerticalAngleDetection, lookForDistance, obstacleMask, groundMask);
 
         }
-        if(fieldOfView2D.enabled)
+        if (fieldOfView3DV2.enabled)
+        {
+            fieldOfView3DV2.SetViewParameters(viewGameObject, maxHorizontalAngleDetection, maxVerticalAngleDetection, lookForDistance, obstacleMask, groundMask);
+
+        }
+        if (fieldOfView2D.enabled)
         {
             fieldOfView2D.SetViewParameters(viewGameObject, maxHorizontalAngleDetection, lookForDistance, obstacleMask, groundMask);
         }
@@ -48,7 +54,7 @@ public class PatrolState : StateNPC
 
     protected override void OnUpdate()
     {
-        //Patrol();
+        Patrol();
         if (FindVisibleTargets())
         {
             npcStateController.chaseState.SetTarget(targetDetected);

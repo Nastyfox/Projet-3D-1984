@@ -55,9 +55,9 @@ public class CharacterControlsStateController : ControllerStateControls
         currentState.OnStateMouseMoveMiddleButtonPressed(axisValue);
     }
 
-    public override void OnScrollControlPressed(float scrollValue)
+    public override void OnControlPressed(bool isPressed)
     {
-        currentState.OnStateScrollControlPressed(scrollValue);
+        currentState.OnStateControlPressed(isPressed);
     }
 
     void Update()

@@ -75,12 +75,12 @@ public abstract class CharacterStateControls
         cameraManager.OnRotate(axisValue);
     }
 
-    public void OnStateScrollControlPressed(float scrollValue)
+    public void OnStateControlPressed(bool isPressed)
     {
-        OnScrollControlPressed(scrollValue);
+        OnControlPressed(isPressed);
     }
 
-    protected virtual void OnScrollControlPressed(float scrollValue)
+    protected virtual void OnControlPressed(bool isPressed)
     {
 
     }

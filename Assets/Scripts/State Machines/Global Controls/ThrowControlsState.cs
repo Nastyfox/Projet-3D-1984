@@ -5,6 +5,8 @@ using UnityEngine;
 public class ThrowControlsState : CharacterStateControls
 {
     private Vector3 mousePosition;
+    
+    private bool controlPressed = false;
 
     [SerializeField] private ThrowController throwController;
 
@@ -30,11 +32,18 @@ public class ThrowControlsState : CharacterStateControls
 
     protected override void OnScroll(float scrollValue)
     {
-        
+        if (controlPressed)
+        {
+            throwController.ChangeThrowHeight(scrollValue);
+        }
+        else
+        {
+            cameraManager.OnZoom(scrollValue);
+        }
     }
 
-    protected override void OnScrollControlPressed(float scrollValue)
+    protected override void OnControlPressed(bool isPressed)
     {
-        throwController.ChangeThrowHeight(scrollValue);
+        controlPressed = isPressed;
     }
 }

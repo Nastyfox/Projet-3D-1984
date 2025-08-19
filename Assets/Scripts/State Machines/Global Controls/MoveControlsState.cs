@@ -36,14 +36,14 @@ public class MoveControlsState : CharacterStateControls
     {
         //Display move cursor on ground where mouse is pointing
         Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+        RaycastHit raycastHit;
+        if (Physics.Raycast(ray, out raycastHit))
         {
             // Assuming the ground is tagged as "Ground"
-            if (hit.transform.CompareTag("Ground"))
+            if (raycastHit.transform.CompareTag("Ground"))
             {
                 // Set the position of the move cursor to the hit point
-                moveCursor.transform.position = hit.point;
+                moveCursor.transform.position = raycastHit.point;
             }
         }
     }

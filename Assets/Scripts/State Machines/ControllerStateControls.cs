@@ -17,7 +17,7 @@ public abstract class ControllerStateControls : MonoBehaviour
 
     }
 
-    public virtual void OnScrollControlPressed(float scrollValue)
+    public virtual void OnControlPressed(bool isPressed)
     {
 
     }

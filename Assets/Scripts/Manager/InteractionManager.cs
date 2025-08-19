@@ -94,11 +94,8 @@ public class InteractionManager : MonoBehaviour
         }
     }
 
-    public void OnScrollControlPressed(InputAction.CallbackContext context)
+    public void OnControlPressed(InputAction.CallbackContext context)
     {
-        if (currentControlsStateController != null)
-        {
-            currentControlsStateController.OnScrollControlPressed(context.ReadValue<float>());
-        }
+        currentControlsStateController?.OnControlPressed(context.performed);
     }
 }

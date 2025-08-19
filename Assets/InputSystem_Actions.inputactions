@@ -34,13 +34,13 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ScrollControlPressed",
-                    "type": "Value",
-                    "id": "e7793720-10ca-4800-8128-8b96e5c41bb5",
-                    "expectedControlType": "Axis",
+                    "name": "ControlPressed",
+                    "type": "Button",
+                    "id": "53f021fc-4407-49a9-abf9-0031b3a4def6",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
-                    "initialStateCheck": true
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -100,37 +100,15 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "One Modifier",
-                    "id": "43dc605c-f6ae-4517-a3b5-e9f0e3f3f7ca",
-                    "path": "OneModifier",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ScrollControlPressed",
-                    "isComposite": true,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "modifier",
-                    "id": "72adecdd-483d-499a-80be-d3f4e4dd1cbb",
+                    "name": "",
+                    "id": "8459d2c2-343b-44fd-89f4-799ff626f1d0",
                     "path": "<Keyboard>/ctrl",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ScrollControlPressed",
+                    "action": "ControlPressed",
                     "isComposite": false,
-                    "isPartOfComposite": true
-                },
-                {
-                    "name": "binding",
-                    "id": "8a7620b5-a857-4927-8282-df9a6ea02f6f",
-                    "path": "<Mouse>/scroll/y",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "",
-                    "action": "ScrollControlPressed",
-                    "isComposite": false,
-                    "isPartOfComposite": true
+                    "isPartOfComposite": false
                 }
             ]
         }
