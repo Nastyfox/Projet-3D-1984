@@ -28,7 +28,6 @@ public class ThrowController : MonoBehaviour
     private Vector3 positionBeforeThrow;
     private Quaternion rotationBeforeThrow;
 
-    private Vector3 mousePosition;
     private float gravity;
 
     [SerializeField] private float maxHeightThrow;
@@ -47,7 +46,6 @@ public class ThrowController : MonoBehaviour
         gravity = Physics.gravity.y;
         CreatePhysicsScene();
 
-        throwHeight = minHeightThrow;
         throwDistance = heightToDistanceRatio / throwHeight;
         throwDistance = Mathf.Clamp(throwDistance, minDistanceThrow, maxDistanceThrow);
     }
@@ -100,18 +98,19 @@ public class ThrowController : MonoBehaviour
         rotationBeforeThrow = objectGrabbed.transform.rotation;
 
         minHeightThrow = positionBeforeThrow.y + 0.1f;
+        throwHeight = minHeightThrow;
 
         lineRenderer.enabled = true;
         objectToThrowRenderer.enabled = true;
     }
 
-    public void SimulateTrajectory()
+    public void SimulateTrajectory(Vector3 mousePosition)
     {
         ghostObjectRb.linearVelocity = Vector3.zero;
         ghostObject.transform.position = positionBeforeThrow;
         ghostObject.transform.rotation = rotationBeforeThrow;
 
-        ghostObjectRb.linearVelocity = CalculateLaunchVelocity();
+        ghostObjectRb.linearVelocity = CalculateLaunchVelocity(mousePosition);
 
         lineRenderer.positionCount = maxPhysicsFrameIterations;
 
@@ -148,29 +147,31 @@ public class ThrowController : MonoBehaviour
         RaycastHit raycastHit;
         if (Physics.Raycast(ray, out raycastHit))
         {
-            mousePosition = raycastHit.point;
+            return raycastHit.point; 
         }
 
-        return mousePosition;
+        return Vector3.zero;
     }
 
-    private Vector3 CalculateLaunchVelocity()
+    private Vector3 CalculateLaunchVelocity(Vector3 mousePosition)
     {
         float displacementY = mousePosition.y - positionBeforeThrow.y;
-        displacementY = Mathf.Min(displacementY, maxHeightThrow);
+        displacementY = Mathf.Min(displacementY, throwHeight);
 
         float displacementX = Mathf.Clamp(mousePosition.x - positionBeforeThrow.x, -throwDistance, throwDistance);
         float displacementZ = Mathf.Clamp(mousePosition.z - positionBeforeThrow.z, -throwDistance, throwDistance);
+
         Vector3 displacementXZ = new Vector3(displacementX, 0, displacementZ);
 
         float time = Mathf.Sqrt(-2 * throwHeight / gravity) + Mathf.Sqrt(2 * (displacementY - throwHeight) / gravity);
+
         Vector3 velocityY = Vector3.up * Mathf.Sqrt(-2 * gravity * throwHeight);
         Vector3 velocityXZ = displacementXZ / time;
 
         return velocityXZ + velocityY;
     }
 
-    public void LaunchObject()
+    public void LaunchObject(Vector3 mousePosition)
     {
         lineRenderer.enabled = false;
         objectToThrowRenderer.enabled = false;
@@ -180,7 +181,7 @@ public class ThrowController : MonoBehaviour
 
         objectGrabbed.transform.SetParent(interactableElementsParent);
         objectGrabbedRb.isKinematic = false;
-        objectGrabbedRb.linearVelocity = CalculateLaunchVelocity();
+        objectGrabbedRb.linearVelocity = CalculateLaunchVelocity(mousePosition);
 
         objectGrabbed = null;
         Destroy(displayThrowObject);

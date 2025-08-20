@@ -19,13 +19,13 @@ public class ThrowControlsState : CharacterStateControls
     protected override void OnUpdate()
     {
         mousePosition = throwController.GetMousePosition(mainCamera);
-        throwController.SimulateTrajectory();
         characterController.FollowMoveCursor(mousePosition);
+        throwController.SimulateTrajectory(mousePosition);
     }
 
     protected override void OnMouseClick(RaycastHit raycast)
     {
-        throwController.LaunchObject();
+        throwController.LaunchObject(mousePosition);
         controlOptions.ChangeStateGrabbedObjectOptions();
         controlsStateController.ChangeState(controlsStateController.globalControlsState);
     }

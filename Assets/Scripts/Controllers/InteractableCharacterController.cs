@@ -1,4 +1,5 @@
 using System;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -57,6 +58,6 @@ public class InteractableCharacterController : MonoBehaviour
 
     public void FollowMoveCursor(Vector3 pointToLookAt)
     {
-        this.transform.LookAt(pointToLookAt);
+        this.transform.LookAt(new Vector3(pointToLookAt.x, this.transform.position.y, pointToLookAt.z));
     }
 }
